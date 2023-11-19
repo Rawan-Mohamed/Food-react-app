@@ -1,0 +1,19 @@
+.Auth-container{
+    background-color: aquamarine;
+    background-image: url(/src/assets/images/ella-olsson-C1Q3qOTlegg-unsplash\ 1.png);
+}
+.bg-overlay{
+    background-image:linear-gradient(to right top,rgba(55,140,47,0.63),rgba(0,0,0,0.6));
+    
+}
+
+.sidebar-container .ps-sidebar-container {
+background-color:#1F263E ;
+height: 100vh;
+color: #fff;
+border-top-right-radius: 15%;
+}
+
+.sidebar-container .ps-sidebar-container .ps-menu-button:hover{
+    background-color:rgba(0, 146, 71, 0.1);
+}
