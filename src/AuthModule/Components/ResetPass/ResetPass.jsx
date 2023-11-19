@@ -105,10 +105,13 @@ export default function ResetPass() {
                     type="password"
                     {...register("password", {
                       required: true,
+                      pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                     })}
                   />
                   {errors.password && errors.password.type === "required" && (
                     <span className='text-danger'>Password is required</span>)}
+                    {errors.password && errors.password.type === "pattern" && (
+                    <span className='text-danger'>Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character</span>)}
                 </div>
                 {/* //Confirm Password */}
                 <div className="form-grup my-3">
@@ -118,10 +121,13 @@ export default function ResetPass() {
                     type="password"
                     {...register("confirmPassword", {
                       required: true,
+                      pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                     })}
                   />
                   {errors.confirmPassword && errors.confirmPassword.type === "required" && (
                     <span className='text-danger'>Confirm Password is required</span>)}
+                    {errors.confirmPassword && errors.confirmPassword.type === "pattern" && (
+                    <span className='text-danger'>Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character</span>)}
                 </div>
 
                 <div className='form-group my-3'>
