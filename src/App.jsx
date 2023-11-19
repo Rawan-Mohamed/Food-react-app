@@ -10,7 +10,6 @@ import RecipesList from './RecipesModule/Components/RecipesList/RecipesList';
 import CategoriesList from './CategoriesModule/Components/CategoriesList/CategoriesList';
 import AuthLayout from './SharedModule/Components/AuthLayout/AuthLayout';
 import ChangePass from './AuthModule/Components/ChangePass/ChangePass';
-import ForgetPass from './AuthModule/Components/ForgetPass/ForgetPass';
 import Home from './HomeModule/Components/Home/Home';
 import { jwtDecode } from 'jwt-decode';
 import ResetPass from './AuthModule/Components/ResetPass/ResetPass';
@@ -24,8 +23,14 @@ function App() {
 
   let saveAdminData = () => {
     let encodedToken = localStorage.getItem('adminToken');
-    let decodedToken = jwtDecode(encodedToken);
-    setAdminData(decodedToken)
+    // let decodedToken = jwtDecode(encodedToken);
+    // setAdminData(decodedToken);
+    
+    if (encodedToken) {
+      let decodedToken = jwtDecode(encodedToken);
+      setAdminData(decodedToken);
+      console.log(setAdminData)
+    }
   }
   useEffect(() => {
     if (localStorage.getItem("adminToken")) {
@@ -36,11 +41,11 @@ function App() {
   const routes = createBrowserRouter([
     {
       path: 'dashboard',
-      element:(
+      element: (
         <ProtectedRoute adminData={adminData}>
           <MasterLayout adminData={adminData} />
         </ProtectedRoute>
-        ),
+      ),
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Home /> },
@@ -51,21 +56,20 @@ function App() {
     },
     {
       path: "/",
-      element: (
+      element: 
         // <ProtectedRoute adminData={adminData} >
         //   <AuthLayout/>
         // </ProtectedRoute>
-          <AuthLayout/>
-      ),
-        // <AuthLayout/>
+        <AuthLayout />
+      ,
+      // <AuthLayout/>
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Login saveAdminData={saveAdminData} /> },
         { path: "login", element: <Login saveAdminData={saveAdminData} /> },
-        // { path: "forget-password", element: <ForgetPass /> },
-        { path: "change-password", element: <ChangePass/> },
-        { path: "reset-pass", element:<ResetPass/>},
-        { path:"reset-pass-request", element: <ResetPassRequest/>}
+        { path: "change-password", element: <ChangePass /> },
+        { path: "reset-pass", element: <ResetPass /> },
+        { path: "reset-pass-request", element: <ResetPassRequest /> }
 
 
       ]
@@ -74,7 +78,7 @@ function App() {
 
   return (
     <>
-     <ToastContainer />
+      <ToastContainer />
       <RouterProvider router={routes} />
     </>
   )

@@ -5,30 +5,17 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as Yup from 'yup'
+
 
 export default function ResetPass() {
   const navigate = useNavigate();
-  
-
-  //yup from react hook form to validation
-  const formSchema = Yup.object().shape({
-    password: Yup.string()
-      .required('Password is required'),
-      
-      confirmPassword: Yup.string()
-      .required('Password is required')
-      .oneOf([Yup.ref('password')], 'Passwords does not match'),
-  })
-  const formOptions = { resolver: yupResolver(formSchema) }
-  // some {properties} and receive return from hook useForm 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-  } = useForm(formOptions);
+    getValues,
+
+  } = useForm();
 
 
   const onSubmit = (data) => {
@@ -122,37 +109,37 @@ export default function ResetPass() {
                 <div className="form-group my-3">
                   <input
                     placeholder='New Password'
-                    className={`form-control  ${errors.password ? 'is-invalid' : ''}`}
+                    className='form-control text-muted'
                     type="password"
                     {...register("password", {
-                      // required: true,
-                      pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                 
+                      required: "This field is required",
+
+                      // pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+
                     })}
                   />
-                  {/* {errors.password && errors.password.type === "required" && (
-                    <span className='text-danger'>Password is required</span>)} */}
-                    <div className="invalid-feedback">{errors.password?.message}</div>
-                    {errors.password && errors.password.type === "pattern" && (
-                    <span className='text-danger'>Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character</span>)}
+                  {errors.password && (
+                    <span className='text-danger'>{errors.password.message}</span>)}
+                  {/* <div className="invalid-feedback">{errors.password?.message}</div> */}
+
                 </div>
                 {/* //Confirm Password */}
                 <div className="form-group my-3">
                   <input
                     placeholder='Confirm New Password'
-                    className={`form-control  ${errors.confirmPassword ? 'is-invalid' : ''}`}
+                    className='form-control text-muted'
                     type="password"
                     {...register("confirmPassword", {
+                      validate: (value) =>
+                        getValues("password") === value || "Password don't match"
                       // required: true,
-                      pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                     
+                      // pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+
                     })}
                   />
-                  {/* {errors.confirmPassword && errors.confirmPassword.type === "required" && (
-                    <span className='text-danger'>Confirm Password is required</span>)} */}
-                    <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
-                    {errors.confirmPassword && errors.confirmPassword.type === "pattern" && (
-                    <span className='text-danger'>Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character</span>)}
+                  {errors.confirmPassword && (
+                    <span className='text-danger'>{errors.confirmPassword.message}</span>)}
+
                 </div>
 
                 <div className='form-group my-3'>

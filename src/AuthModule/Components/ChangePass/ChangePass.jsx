@@ -5,31 +5,18 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as Yup from 'yup'
 
 
 export default function ChangePass({ handleClose }) {
   const navigate = useNavigate();
   // some {properties} and receive return from hook useForm 
-  const formSchema = Yup.object().shape({
-    newPassword: Yup.string()
-      .required('Password is mendatory')
-      .min(8, 'Password must be at 8 char long'),
-
-    confirmNewPassword: Yup.string()
-      .required('Password is mendatory')
-      .min(8, 'Password must be at 8 char long')
-      .oneOf([Yup.ref('password')], 'Passwords does not match'),
-  })
-  const formOptions = { resolver: yupResolver(formSchema) }
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
-  } = useForm(formOptions);
+    getValues,
+  } = useForm();
 
   // bdal mn handlha gwa el handleSubmit h3ml function a st2bl feha 
   const onSubmit = (data) => {
@@ -107,35 +94,39 @@ export default function ChangePass({ handleClose }) {
               <div className="form-group my-3">
                 <input
                   placeholder='New Password'
-                  className={`form-control  ${errors.newPassword ? 'is-invalid' : ''}`}
+                  className='form-control ps-4 mb-1'
                   type="password"
                   {...register("newPassword", {
+                    required: "This field is required",
                     // required: true,
-                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                    // pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                   })}
                 />
                 {/* {errors.newPassword && errors.newPassword.type === "required" && (
                   <span className='text-danger'>newPassword is required</span>)} */}
-                <div className="invalid-feedback">{errors.newPassword?.message}</div>
-                {errors.newPassword && errors.newPassword.type === "pattern" && (
-                  <span className='text-danger'> at least one uppercase letter, one lowercase letter, one number and one special character</span>)}
+                {errors.newPassword && (
+                  <span className='text-danger'>{errors.newPassword.message}</span>)}
               </div>
               {/* //Confirm Password */}
               <div className="form-group my-3">
                 <input
                   placeholder='Confirm New Password'
-                  className={`form-control  ${errors.confirmNewPassword ? 'is-invalid' : ''}`}
+                  className='form-control ps-4 mb-1'
                   type="password"
                   {...register("confirmNewPassword", {
+                    validate: (value) =>
+                      getValues("newPassword") === value || "Password don't match"
                     // required: true,
-                    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+
                   })}
                 />
+                {errors.confirmNewPassword && (
+                  <span className='text-danger'>{errors.confirmNewPassword.message}</span>)}
                 {/* {errors.confirmNewPassword && errors.confirmNewPassword.type === "required" && (
                   <span className='text-danger'>confirmNewPassword is required</span>)} */}
-                <div className="invalid-feedback">{errors.confirmNewPassword?.message}</div>
+                {/* <div className="invalid-feedback">{errors.confirmNewPassword?.message}</div>
                 {errors.confirmNewPassword && errors.confirmNewPassword.type === "pattern" && (
-                  <span className='text-danger'> at least one uppercase letter, one lowercase letter, one number and one special character</span>)}
+                  <span className='text-danger'> at least one uppercase letter, one lowercase letter, one number and one special character</span>)} */}
               </div>
               {/* Buttuon login */}
               <div className="form-group my-3">

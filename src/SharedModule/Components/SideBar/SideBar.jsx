@@ -4,7 +4,6 @@ import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import logo from '../../../assets/images/3.png'
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import ForgetPass from './../../../AuthModule/Components/ForgetPass/ForgetPass';
 import ChangePass from '../../../AuthModule/Components/ChangePass/ChangePass';
 
 export default function SideBar() {
