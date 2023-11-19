@@ -5,14 +5,30 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as Yup from 'yup'
+
 export default function ResetPass() {
   const navigate = useNavigate();
+  
+
+  //yup from react hook form to validation
+  const formSchema = Yup.object().shape({
+    password: Yup.string()
+      .required('Password is required'),
+      
+      confirmPassword: Yup.string()
+      .required('Password is required')
+      .oneOf([Yup.ref('password')], 'Passwords does not match'),
+  })
+  const formOptions = { resolver: yupResolver(formSchema) }
   // some {properties} and receive return from hook useForm 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+    reset,
+  } = useForm(formOptions);
 
 
   const onSubmit = (data) => {
@@ -38,20 +54,25 @@ export default function ResetPass() {
         }, 1);
       })
       .catch((error) => {
-        toast(error.response.data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          pauseOnHover: true,
-          progress: undefined,
-          theme: "colored",
-        });
+        // toast(error.response.data.message, {
+        //   position: "top-right",
+        //   autoClose: 3000,
+        //   hideProgressBar: false,
+        //   closeOnClick: true,
+        //   draggable: true,
+        //   pauseOnHover: true,
+        //   progress: undefined,
+        //   theme: "colored",
+        // });
         // console.log(error.response.data.message);
 
       });
   };
+
+
+
+
+
   return (
     <>
       <ToastContainer />
@@ -98,34 +119,38 @@ export default function ResetPass() {
                     <span className='text-danger'>Otp is required</span>)}
                 </div>
                 {/* //New Password */}
-                <div className="form-grup my-3">
+                <div className="form-group my-3">
                   <input
                     placeholder='New Password'
-                    className='form-control text-muted'
+                    className={`form-control  ${errors.password ? 'is-invalid' : ''}`}
                     type="password"
                     {...register("password", {
-                      required: true,
+                      // required: true,
                       pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                 
                     })}
                   />
-                  {errors.password && errors.password.type === "required" && (
-                    <span className='text-danger'>Password is required</span>)}
+                  {/* {errors.password && errors.password.type === "required" && (
+                    <span className='text-danger'>Password is required</span>)} */}
+                    <div className="invalid-feedback">{errors.password?.message}</div>
                     {errors.password && errors.password.type === "pattern" && (
                     <span className='text-danger'>Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character</span>)}
                 </div>
                 {/* //Confirm Password */}
-                <div className="form-grup my-3">
+                <div className="form-group my-3">
                   <input
                     placeholder='Confirm New Password'
-                    className='form-control text-muted'
+                    className={`form-control  ${errors.confirmPassword ? 'is-invalid' : ''}`}
                     type="password"
                     {...register("confirmPassword", {
-                      required: true,
+                      // required: true,
                       pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                     
                     })}
                   />
-                  {errors.confirmPassword && errors.confirmPassword.type === "required" && (
-                    <span className='text-danger'>Confirm Password is required</span>)}
+                  {/* {errors.confirmPassword && errors.confirmPassword.type === "required" && (
+                    <span className='text-danger'>Confirm Password is required</span>)} */}
+                    <div className="invalid-feedback">{errors.confirmPassword?.message}</div>
                     {errors.confirmPassword && errors.confirmPassword.type === "pattern" && (
                     <span className='text-danger'>Minimum eight characters, at least one uppercase letter, one lowercase letter, one number and one special character</span>)}
                 </div>
