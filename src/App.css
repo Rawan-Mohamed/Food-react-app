@@ -12,10 +12,15 @@ background-color:#1F263E ;
 height: 100vh;
 color: #fff;
 border-top-right-radius: 15%;
+position: relative;
+
 }
+
+
 
 .sidebar-container .ps-sidebar-container .ps-menu-button:hover{
     background-color:rgba(0, 146, 71, 0.1);
+    
 }
 
 .header-content{
@@ -26,4 +31,18 @@ border-top-right-radius: 15%;
 
 .section-container{
     background-color: #F0FFEF;
+}
+
+.img-container{
+    width: 50px;
+}
+
+
+ .css-wx7wi4 img {
+    width: auto !important;
+    min-width: 0 !important;
+}
+
+.nav-bg{
+    background-color: rgba(248, 249, 251, 1);
 }

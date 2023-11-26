@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 
 export default function ResetPassRequest() {
   const navigate = useNavigate();
@@ -14,17 +15,18 @@ export default function ResetPassRequest() {
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = (data) => {
     // console.log(data);
+    setIsLoading(true);
     axios
       .post("http://upskilling-egypt.com:3002/api/v1/Users/Reset/Request", data)
       .then((response) => {
         navigate("/reset-pass");
 
 
-        setTimeout(() => {
+       
           toast.success("Mail sent successfull", {
             position: "top-right",
             autoClose: 3000,
@@ -36,7 +38,7 @@ export default function ResetPassRequest() {
             theme: "colored",
 
           });
-        }, 1);
+       
       })
       .catch((error) => {
         toast(error.response.data.message, {
@@ -87,7 +89,7 @@ export default function ResetPassRequest() {
                 </div>
 
                 <div className='form-group my-3'>
-                  <button className='btn w-100 btn-success'> send</button>
+                  <button className='btn w-100 btn-success' disabled={isLoading}>  {isLoading ? 'Loading...' : 'Send'}</button>
                 </div>
               </form>
 

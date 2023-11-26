@@ -1,7 +1,8 @@
 import React from 'react'
 import SideBar from './../SideBar/SideBar';
-import { Outlet } from 'react-router-dom';
 import NavBar from './../Navbar/Navbar';
+import { Outlet } from 'react-router-dom';
+
 
 
 export default function MasterLayout({ adminData }) {
@@ -17,7 +18,7 @@ export default function MasterLayout({ adminData }) {
           <div className="col-md-10 p-0">
             <div>
               <NavBar adminData={adminData} />
-              <div className=' container-fluid'>
+              <div className='container-fluid'>
                 <Outlet />
               </div>
 
@@ -29,5 +30,6 @@ export default function MasterLayout({ adminData }) {
 
 
     </div>
+   
   )
 }

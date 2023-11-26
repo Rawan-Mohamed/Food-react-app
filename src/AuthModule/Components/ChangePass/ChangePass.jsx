@@ -84,11 +84,12 @@ export default function ChangePass({ handleClose }) {
                   className='form-control ps-4 mb-1'
                   type="password"
                   {...register("oldPassword", {
-                    required: true,
+                    required: "This field is required",
+                    
                   })}
                 />
-                {errors.oldPassword && errors.oldPassword.type === "required" && (
-                  <span className='text-danger'>oldPassword is required</span>)}
+                {errors.oldPassword &&  (
+                  <span className='text-danger'>{errors.oldPassword.message}</span>)}
               </div>
               {/* //New Password */}
               <div className="form-group my-3">
@@ -98,6 +99,10 @@ export default function ChangePass({ handleClose }) {
                   type="password"
                   {...register("newPassword", {
                     required: "This field is required",
+                    pattern:{
+                      value:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                      message: "Invaild password" ,
+                    }
                     // required: true,
                     // pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                   })}
@@ -105,7 +110,7 @@ export default function ChangePass({ handleClose }) {
                 {/* {errors.newPassword && errors.newPassword.type === "required" && (
                   <span className='text-danger'>newPassword is required</span>)} */}
                 {errors.newPassword && (
-                  <span className='text-danger'>{errors.newPassword.message}</span>)}
+                  <span className='text-danger'>{errors?.newPassword?.message}</span>)}
               </div>
               {/* //Confirm Password */}
               <div className="form-group my-3">
@@ -115,13 +120,17 @@ export default function ChangePass({ handleClose }) {
                   type="password"
                   {...register("confirmNewPassword", {
                     validate: (value) =>
-                      getValues("newPassword") === value || "Password don't match"
+                      getValues("newPassword") === value || "Password don't match",
                     // required: true,
+                    pattern:{
+                      value:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                      message: "Invaild password" ,
+                    }
 
                   })}
                 />
                 {errors.confirmNewPassword && (
-                  <span className='text-danger'>{errors.confirmNewPassword.message}</span>)}
+                  <span className='text-danger'>{errors?.confirmNewPassword?.message}</span>)}
                 {/* {errors.confirmNewPassword && errors.confirmNewPassword.type === "required" && (
                   <span className='text-danger'>confirmNewPassword is required</span>)} */}
                 {/* <div className="invalid-feedback">{errors.confirmNewPassword?.message}</div>

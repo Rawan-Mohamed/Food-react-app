@@ -24,34 +24,32 @@ export default function ResetPass() {
       .post("http://upskilling-egypt.com:3002/api/v1/Users/Reset", data)
       .then((response) => {
         navigate("/login");
+        toast.success("Password changed successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: "colored",
+
+        });
 
 
-        setTimeout(() => {
-          toast.success("Password changed successfully", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            draggable: true,
-            pauseOnHover: true,
-            progress: undefined,
-            theme: "colored",
-
-          });
-        }, 1);
       })
       .catch((error) => {
-        // toast(error.response.data.message, {
-        //   position: "top-right",
-        //   autoClose: 3000,
-        //   hideProgressBar: false,
-        //   closeOnClick: true,
-        //   draggable: true,
-        //   pauseOnHover: true,
-        //   progress: undefined,
-        //   theme: "colored",
-        // });
-        // console.log(error.response.data.message);
+        toast(error.response.data.message, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        console.log(error.response.data.message);
 
       });
   };
@@ -83,14 +81,17 @@ export default function ResetPass() {
                     className='form-control text-muted'
                     type="email"
                     {...register("email", {
-                      required: true,
-                      pattern: /^[^@]+@[^@]+\.[^@.]{2,}$/,
+                      required: "This field is required",
+                      pattern:{
+                        value: /^[^@]+@[^@]+\.[^@.]{2,}$/,
+                        message :"Enter correct Email"
+                      } ,
                     })}
                   />
-                  {errors.email && errors.email.type === "required" && (
-                    <span className='text-danger'>email is required</span>)}
-                  {errors.email && errors.email.type === "pattern" && (
-                    <span className='text-danger'>invaild mail</span>)}
+                  {errors.email  && (
+                    <span className='text-danger'>{errors?.email?.message}</span>)}
+                  {/* {errors.email && errors.email.type === "pattern" && (
+                    <span className='text-danger'>invaild mail</span>)} */}
                 </div>
                 {/* OTP */}
                 <div className="form-group my-3">
@@ -99,11 +100,12 @@ export default function ResetPass() {
                     className='form-control mb-1 text-muted'
                     type="text"
                     {...register("seed", {
-                      required: true,
+                      required: "Otp is required",
+                      
                     })}
                   />
-                  {errors.seed && errors.seed.type === "required" && (
-                    <span className='text-danger'>Otp is required</span>)}
+                  {errors.seed && (
+                    <span className='text-danger'>{errors?.seed?.message}</span>)}
                 </div>
                 {/* //New Password */}
                 <div className="form-group my-3">
@@ -113,6 +115,10 @@ export default function ResetPass() {
                     type="password"
                     {...register("password", {
                       required: "This field is required",
+                      pattern:{
+                        value:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                        message: "Invaild password" ,
+                      }
 
                       // pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
 
@@ -131,7 +137,11 @@ export default function ResetPass() {
                     type="password"
                     {...register("confirmPassword", {
                       validate: (value) =>
-                        getValues("password") === value || "Password don't match"
+                        getValues("password") === value || "Password don't match",
+                        pattern:{
+                          value:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                          message: "Invaild password" ,
+                        }
                       // required: true,
                       // pattern:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
 

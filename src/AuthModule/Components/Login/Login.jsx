@@ -21,7 +21,7 @@ export default function Login({ saveAdminData }) {
     axios
       .post("http://upskilling-egypt.com:3002/api/v1/Users/Login", data)
       .then((response) => {
-        // setTimeout(toast("wow logiiiiin!"),2000);
+    
         localStorage.setItem("adminToken", response.data.token); //m3ia el 7aga el tsbt any logged in 
         saveAdminData();
         navigate("/dashboard")
@@ -31,7 +31,6 @@ export default function Login({ saveAdminData }) {
         // console.log(error.response.data.message);
       });
   };
-
 
 
   return (
@@ -50,42 +49,47 @@ export default function Login({ saveAdminData }) {
               <h2>Log in</h2>
               <p>Welcome Back! Please enter your details</p>
               {/* /Email/ */}
-              <div className="form-grup my-3">
+              <div className="form-grup my-3 input-icons">
                 <input
                   placeholder='Enter your E-mail'
-                  className='form-control'
+                  className='form-control input-field '
                   type="email"
                   {...register("email", {
                     required: true,
-                    pattern: /^[^@]+@[^@]+\.[^@.]{2,}$/,
+                    pattern:{ 
+                      value: /^[^@]+@[^@]+\.[^@.]{2,}$/,
+                    message:"email is required"}
                   })}
                 />
-                {errors.email && errors.email.type === "required" && (
-                  <span className='text-danger'>email is required</span>)}
-                {errors.email && errors.email.type === "pattern" && (
-                  <span className='text-danger'>invaild mail</span>)}
+                {errors.email &&  (
+                  <span className='text-danger'>{errors.email.message}</span>)}
+                {/* {errors.email && errors.email.type === "pattern" && (
+                  <span className='text-danger'>invaild mail</span>)} */}
               </div>
               {/* //Password */}
-              <div className="form-grup my-3">
+              <div className="form-group my-3">
+             
                 <input
                   placeholder='Password'
                   className='form-control'
+                  
                   type="password"
                   {...register("password", {
-                    required: true,
+                    required:"password is required",
                   })}
+                  
                 />
-                {errors.password && errors.password.type === "required" && (
-                  <span className='text-danger'>password is required</span>)}
+                {errors.password &&  (
+                  <span className='text-danger'>{errors.password.message}</span>)}
               </div>
 
               <div className='row'>
                 {/* Register password */}
-                {/* <div className='register col-md-6'>
+                <div className='register col-md-6'>
                 <a href="#" className="text-black">Register now</a>
-              </div> */}
+              </div>
                 {/* Forget password */}
-                <div className='form-group my-3 position-relative d-flex justify-content-end forgetpass '>
+                <div className='form-group col-md-6 forgetpass text-end '>
                   <Link to = "/reset-pass-request" className=' text-success'>
                     Forget Password?
                   </Link>

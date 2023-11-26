@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import Login from './AuthModule/Components/Login/Login';
-import NotFound from './SharedModule/Components/NotFound/NotFound';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './SharedModule/Components/ProtectedRoute/ProtectedRoute';
 import MasterLayout from './SharedModule/Components/MasterLayout/MasterLayout';
@@ -11,6 +10,7 @@ import CategoriesList from './CategoriesModule/Components/CategoriesList/Categor
 import AuthLayout from './SharedModule/Components/AuthLayout/AuthLayout';
 import ChangePass from './AuthModule/Components/ChangePass/ChangePass';
 import Home from './HomeModule/Components/Home/Home';
+import NotFound from './SharedModule/Components/NotFound/NotFound';
 import { jwtDecode } from 'jwt-decode';
 import ResetPass from './AuthModule/Components/ResetPass/ResetPass';
 import ResetPassRequest from './AuthModule/Components/ResetPassRequest/ResetPassRequest';
@@ -22,15 +22,15 @@ function App() {
 
 
   let saveAdminData = () => {
-    let encodedToken = localStorage.getItem('adminToken');
-    let decodedToken = jwtDecode(encodedToken);
-    setAdminData(decodedToken);
+    let encodedToken = localStorage.getItem("adminToken");
+    // let decodedToken = jwtDecode(encodedToken);
+    // setAdminData(decodedToken);
     
-    // if (encodedToken) {
-    //   let decodedToken = jwtDecode(encodedToken);
-    //   setAdminData(decodedToken);
-    //   console.log(setAdminData)
-    // }
+    if (encodedToken) {
+      let decodedToken = jwtDecode(encodedToken);
+      setAdminData(decodedToken);
+      console.log(setAdminData)
+    }
   }
   useEffect(() => {
     if (localStorage.getItem("adminToken")) {
@@ -62,14 +62,14 @@ function App() {
         // </ProtectedRoute>
         <AuthLayout />
       ,
-      // <AuthLayout/>
       errorElement: <NotFound />,
       children: [
         { index: true, element: <Login saveAdminData={saveAdminData} /> },
         { path: "login", element: <Login saveAdminData={saveAdminData} /> },
         { path: "change-password", element: <ChangePass /> },
         { path: "reset-pass", element: <ResetPass /> },
-        { path: "reset-pass-request", element: <ResetPassRequest /> }
+        { path: "reset-pass-request", element: <ResetPassRequest /> },
+ 
 
 
       ]
