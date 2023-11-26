@@ -37,12 +37,12 @@ export default function SideBar() {
         <Menu>
           <MenuItem onClick={handleToggle} icon={<img src={logo} className='sidebar-logo w-100'></img>} ></MenuItem>
           {/* <MenuItem onClick={handleToggle} icon={<i className="fa-solid fa-bars"></i>} ></MenuItem> */}
-          <MenuItem icon={<i class="fa fa-home"></i>} component={<Link to="/dashboard" />}> Home</MenuItem>
+          <MenuItem icon={<i className="fa fa-home"></i>} component={<Link to="/dashboard" />}> Home</MenuItem>
           <MenuItem icon={<i className='fa-solid fa-user' aire-hidden="true"></i>} component={<Link to="/dashboard/users" />}> Users</MenuItem>
           <MenuItem icon={<i className="fa-solid fa-utensils"></i>} component={<Link to="/dashboard/recipes" />}> Recipes</MenuItem>
-          <MenuItem icon={<i class="fa-solid fa-shapes"></i>} component={<Link to="/dashboard/categories" />}> Categoeies</MenuItem>
-          <MenuItem onClick={handleShow} icon={<i class="fa-solid fa-unlock-keyhole"></i>}> Change password</MenuItem>
-          <MenuItem onClick={logOut} icon={<i class="fa-solid fa-right-from-bracket"></i>} component={<Link to="/login" />}> Logout</MenuItem>
+          <MenuItem icon={<i className="fa-solid fa-shapes"></i>} component={<Link to="/dashboard/categories" />}> Categoeies</MenuItem>
+          <MenuItem onClick={handleShow} icon={<i className="fa-solid fa-unlock-keyhole"></i>}> Change password</MenuItem>
+          <MenuItem onClick={logOut} icon={<i className="fa-solid fa-right-from-bracket"></i>} component={<Link to="/login" />}> Logout</MenuItem>
         </Menu>
       </Sidebar>
     </div>

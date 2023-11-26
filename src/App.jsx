@@ -23,14 +23,14 @@ function App() {
 
   let saveAdminData = () => {
     let encodedToken = localStorage.getItem('adminToken');
-    // let decodedToken = jwtDecode(encodedToken);
-    // setAdminData(decodedToken);
+    let decodedToken = jwtDecode(encodedToken);
+    setAdminData(decodedToken);
     
-    if (encodedToken) {
-      let decodedToken = jwtDecode(encodedToken);
-      setAdminData(decodedToken);
-      console.log(setAdminData)
-    }
+    // if (encodedToken) {
+    //   let decodedToken = jwtDecode(encodedToken);
+    //   setAdminData(decodedToken);
+    //   console.log(setAdminData)
+    // }
   }
   useEffect(() => {
     if (localStorage.getItem("adminToken")) {

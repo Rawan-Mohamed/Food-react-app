@@ -1,7 +1,27 @@
 import React from 'react'
-import header from "../../../assets/images/header.png"
-export default function Header({children}) {
+import headerBg from "../../../assets/images/header.png"
+export default function Header({ title, paragraph }) {
   return (
- children
-  );
+
+    <>
+
+      <div className='header-content m-2 rounded-3 text-white'>
+        <div className=' container-fluid'>
+          <div className="row px-4 py-2 g-0 align-items-center">
+            <div className="col-sm-10">
+              <h2>{title}</h2>
+              <p>{paragraph}</p>
+            </div>
+            <div className="col-md-2">
+              <img className=' img-fluid' src={headerBg} alt='' />
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </>
+
+    //   );
+  )
 }
