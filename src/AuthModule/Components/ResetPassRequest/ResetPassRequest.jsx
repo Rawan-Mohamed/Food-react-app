@@ -21,7 +21,7 @@ export default function ResetPassRequest() {
     // console.log(data);
     setIsLoading(true);
     axios
-      .post("http://upskilling-egypt.com:3002/api/v1/Users/Reset/Request", data)
+      .post("https://upskilling-egypt.com:443/api/v1/Users/Reset/Request", data)
       .then((response) => {
         navigate("/reset-pass");
 

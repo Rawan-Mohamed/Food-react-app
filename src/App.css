@@ -33,16 +33,23 @@ position: relative;
     background-color: #F0FFEF;
 }
 
+
+
 .img-container{
     width: 50px;
 }
 
+/* .img-logo {
+    width: 60px;
+} */
 
- .css-wx7wi4 img {
-    width: auto !important;
-    min-width: 0 !important;
+
+
+
+.img-logo span.ps-menu-icon.css-wx7wi4 {
+    width:200px !important;
+
 }
-
 .nav-bg{
     background-color: rgba(248, 249, 251, 1);
 }

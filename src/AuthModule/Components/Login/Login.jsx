@@ -17,10 +17,11 @@ export default function Login({ saveAdminData }) {
 
   // bdal mn handlha gwa el handleSubmit h3ml function a st2bl feha 
   const onSubmit = (data) => {
-    // console.log(data);
+    console.log(data);
     axios
-      .post("http://upskilling-egypt.com:3002/api/v1/Users/Login", data)
+      .post("https://upskilling-egypt.com:443/api/v1/Users/Login", data)
       .then((response) => {
+        console.log(response);
     
         localStorage.setItem("adminToken", response.data.token); //m3ia el 7aga el tsbt any logged in 
         saveAdminData();

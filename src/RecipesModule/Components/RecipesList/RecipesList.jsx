@@ -43,7 +43,9 @@ export default function RecipesList() {
   const onSubmit = (data) => {
     reset();
     // console.log(data.imagePath[0]);
-    axios.post("http://upskilling-egypt.com:3002/api/v1/Recipe/", { ...data, recipeImage: data.recipeImage[0] }, {
+    axios.post("https://upskilling-egypt.com:443/api/v1/Recipe/", 
+    { ...data, recipeImage: data.recipeImage[0] },
+     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         "Content-Type": "multipart/form-data"
@@ -73,7 +75,7 @@ export default function RecipesList() {
 
   //Get Recipe API
   const getAllRecipes = () => {
-    axios.get("http://upskilling-egypt.com:3002/api/v1/Recipe/?pageSize=10&pageNumber=1", {
+    axios.get("https://upskilling-egypt.com:443/api/v1/Recipe/?pageSize=10&pageNumber=1", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
       },
@@ -88,7 +90,7 @@ export default function RecipesList() {
 
   //Delete Recipe API
   const deleteRecipes = () => {
-    axios.delete(`http://upskilling-egypt.com:3002/api/v1/Recipe/${itemId}`, {
+    axios.delete(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
       },
@@ -119,7 +121,7 @@ export default function RecipesList() {
   // ------------------------------------------
   const getAllTags = () => {
     // Fetch tags from the API
-    axios.get('http://upskilling-egypt.com:3002/api/v1/tag/', {
+    axios.get('https://upskilling-egypt.com:443/api/v1/tag/', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
       },
@@ -135,7 +137,7 @@ export default function RecipesList() {
 
   const getCategoryList = () => {
     // Fetch category from the API
-    axios.get('http://upskilling-egypt.com:3002/api/v1/Category/', {
+    axios.get('https://upskilling-egypt.com:443/api/v1/Category/', {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
       },
@@ -225,7 +227,7 @@ export default function RecipesList() {
 
                 <option >Select a Tag Id</option>
                 {tagsList.map((tag) => (
-                  <option key={tag.id} value={tag.id}>{tag.id}</option>
+                  <option key={tag.id} value={tag.id}>{tag.id} - {tag.name}</option>
                 ))}
 
               </select>
@@ -359,7 +361,7 @@ export default function RecipesList() {
                         <img
                           className=' img-fluid'
                           src={
-                            `http://upskilling-egypt.com:3002/` +
+                            `https://upskilling-egypt.com:443/` +
                             recipe.imagePath} alt="" />
                         {/* {recipe.recipeImage ? <img
                           className=' img-fluid'
