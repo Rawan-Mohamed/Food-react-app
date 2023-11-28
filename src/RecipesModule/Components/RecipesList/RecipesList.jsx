@@ -27,6 +27,8 @@ export default function RecipesList() {
   // const [tableData, setTableData] = useState([]);
 
   const showAddModel = () => {
+    getCategoryList();
+    getAllTags();
     setValue("name", null);
     setModelState("Add-model")
   }
@@ -41,8 +43,8 @@ export default function RecipesList() {
 
   // Add recipe API
   const onSubmit = (data) => {
-    reset();
-    // console.log(data.imagePath[0]);
+    
+console.log(data);
     axios.post("https://upskilling-egypt.com:443/api/v1/Recipe/", 
     { ...data, recipeImage: data.recipeImage[0] },
      {
@@ -71,17 +73,20 @@ export default function RecipesList() {
       .catch((error) => {
         console.log(error)
       })
+
+      // reset();
   };
 
   //Get Recipe API
   const getAllRecipes = () => {
-    axios.get("https://upskilling-egypt.com:443/api/v1/Recipe/?pageSize=10&pageNumber=1", {
+    axios.get("https://upskilling-egypt.com:443/api/v1/Recipe/?pageSize=20&pageNumber=1", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
       },
+      
     })
       .then((response) => {
-        setRecipesList(response?.data?.data);
+        setRecipesList(response.data.data);
       })
       .catch((error) => {
         console.log(error);
@@ -155,12 +160,12 @@ export default function RecipesList() {
   // setValuee(event.target.value)
 
 
-  useEffect(() => {
-    getCategoryList();
-    getAllTags();
+  // useEffect(() => {
+  //   getCategoryList();
+  //   getAllTags();
 
 
-  }, []);
+  // }, []);
 
 
   useEffect(() => {
