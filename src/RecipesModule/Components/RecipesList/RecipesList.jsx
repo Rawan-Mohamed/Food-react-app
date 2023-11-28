@@ -74,7 +74,7 @@ console.log(data);
         console.log(error)
       })
 
-      // reset();
+      reset();
   };
 
   //Get Recipe API
