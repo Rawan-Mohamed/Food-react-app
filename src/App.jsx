@@ -17,6 +17,8 @@ import ResetPassRequest from './AuthModule/Components/ResetPassRequest/ResetPass
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+
+
 function App() {
   const [adminData, setAdminData] = useState(null); //useState 34an 3ndi data 3yza atklm m3ha so use "useState"
 
@@ -52,6 +54,7 @@ function App() {
         { path: "users", element: <UserList /> },
         { path: "recipes", element: <RecipesList /> },
         { path: "categories", element: <CategoriesList /> },
+       
       ]
     },
     {
@@ -69,6 +72,7 @@ function App() {
         { path: "change-password", element: <ChangePass /> },
         { path: "reset-pass", element: <ResetPass /> },
         { path: "reset-pass-request", element: <ResetPassRequest /> },
+        
  
 
 

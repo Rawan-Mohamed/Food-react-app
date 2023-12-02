@@ -34,7 +34,7 @@ export default function Home() {
           <div className=' text-end'>
             <button className='btn btn-success'>
               <Link className=' text-white text-decoration-none' to="/dashboard/recipes">
-                Fill Recopes
+                Fill Recipes
                 <i className=' fa fa-arrow-right p-2'></i>
               </Link>
             </button>

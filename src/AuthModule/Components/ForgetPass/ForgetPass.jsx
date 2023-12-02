@@ -29,8 +29,6 @@
 //     formState: { errors },
 //     reset,
 //   } = useForm(formOptions);
-
-
 //   // bdal mn handlha gwa el handleSubmit h3ml function a st2bl feha 
 //   const onSubmit = (data) => {
 //     // console.log(data);
@@ -51,12 +49,6 @@
 //         // console.log(error.response.data.message);
 //       });
 //   };
-
-
-
-
-
-
 
 //   return (
 //     <div className="Auth-container container-fluid">

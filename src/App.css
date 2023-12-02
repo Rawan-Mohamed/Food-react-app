@@ -6,10 +6,13 @@
     background-image:linear-gradient(to right top,rgba(55,140,47,0.63),rgba(0,0,0,0.6));
     
 }
+.sidebar-cont{
+    background-color:#1F263E ; 
 
+}
 .sidebar-container .ps-sidebar-container {
-background-color:#1F263E ;
-height: 100vh;
+background-color:#1F263E ; 
+ height: 100vh;
 color: #fff;
 border-top-right-radius: 15%;
 position: relative;

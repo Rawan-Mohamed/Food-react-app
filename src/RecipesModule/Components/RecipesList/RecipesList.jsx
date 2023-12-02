@@ -25,10 +25,15 @@ export default function RecipesList() {
   const [categoriesList, setCategoriesList] = useState([]);
   // const [selectedTag, setSelectedTag] = useState('');
   // const [tableData, setTableData] = useState([]);
+  const [recipe, setRecipe] = useState();
+  const [pagesArray, setPagesArray] = useState([])
+  const [searchString, setSearchString] = useState(0);
+  const [selectedTagId,setSelectedTagId ] = useState(0);
+  const [selectedCateId,setSelectedCateId ] = useState(0);
+
 
   const showAddModel = () => {
-    getCategoryList();
-    getAllTags();
+
     setValue("name", null);
     setModelState("Add-model")
   }
@@ -41,18 +46,41 @@ export default function RecipesList() {
 
   const handleClose = () => setModelState("close");
 
+
+
+
+
   // Add recipe API
   const onSubmit = (data) => {
-    
-console.log(data);
-    axios.post("https://upskilling-egypt.com:443/api/v1/Recipe/", 
-    { ...data, recipeImage: data.recipeImage[0] },
-     {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        "Content-Type": "multipart/form-data"
-      }
-    })
+    // -------------------
+    const addFormData = new FormData();
+    addFormData.append("name", data['name']);
+    addFormData.append("price", data['price']);
+    addFormData.append("description", data['description']);
+    addFormData.append("tagId", data['tagId']);
+    addFormData.append("categoriesIds", data['categoriesIds']);
+    addFormData.append("recipeImage", data['recipeImage'][0]);
+    // 
+    // if (addFormData) {
+    //   addFormData.forEach((file, index) => {
+    //      addFormData.append(`recipeImage[${index}]`, file);
+    //   });
+    // }
+
+    // -------------------
+    console.log(data);
+    axios.post("https://upskilling-egypt.com:443/api/v1/Recipe/", addFormData
+      // { 
+      //   ...addFormData,
+      //    recipeImage: addFormData.recipeImage[0] 
+      //   },
+
+      , {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          "Content-Type": "multipart/form-data"
+        }
+      })
       .then((response) => {
         console.log(response)
         toast.success("Add successfully", {
@@ -74,19 +102,29 @@ console.log(data);
         console.log(error)
       })
 
-      reset();
+    reset();
   };
 
   //Get Recipe API
-  const getAllRecipes = () => {
-    axios.get("https://upskilling-egypt.com:443/api/v1/Recipe/?pageSize=20&pageNumber=1", {
+  const getAllRecipes = (pageNo, name,tagId,categoryId) => {
+    axios.get("https://upskilling-egypt.com:443/api/v1/Recipe/", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
       },
-      
+      params: {
+        pageSize: 5,
+        pageNumber: pageNo,
+        name: name,
+        tagId:tagId,
+        categoryId:categoryId,
+
+      }
+
     })
       .then((response) => {
-        setRecipesList(response.data.data);
+        setPagesArray(Array(response.data.totalNumberOfPages).fill().map((_, i) => i + 1));
+        setRecipesList(response?.data?.data);
+
       })
       .catch((error) => {
         console.log(error);
@@ -121,6 +159,48 @@ console.log(data);
       })
   }
 
+  //Update Recipe API
+  const updateRecipe = (data) => {
+    axios
+      .put(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
+
+      .then((response) => {
+        toast.success("Update successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        })
+        getAllRecipes();
+        handleClose();
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }
+
+  const showUpdateModel = (item) => {
+    setRecipe(item);
+    getAllTags();
+    getCategoryList();
+    setRecipe(item);
+    setValue("name", item.name);
+    setValue("price", item.price);
+    setValue("description", item.description);
+    setValue("tagId", item.tag.id);
+    setValue("categoriesIds", item.category[0].id);
+    // setValue("recipeImage", item.imagePath[0]);
+    setItemId(item.id);
+    setModelState("update-model")
+  }
 
 
   // ------------------------------------------
@@ -155,24 +235,35 @@ console.log(data);
       });
   }
 
-  //   const [value,setValuee] = useState('')
-  //   function handleSelect(event){
-  // setValuee(event.target.value)
-
-
   // useEffect(() => {
   //   getCategoryList();
   //   getAllTags();
-
-
   // }, []);
 
 
+
+  const getNameVAlue = (input) => {
+    // console.log(target);
+    setSearchString(input.target.value);
+    getAllRecipes(1, input.target.value),selectedTagId,selectedCateId;
+  }
+
+  const getTagValue = (select) => {
+    setSelectedTagId(select.target.value)
+    getAllRecipes(1,null,select.target.value,selectedCateId);
+  };
+
+  const getCategoryValue = (select) => {
+    setSelectedCateId(select.target.value)
+    getAllRecipes(1,null,selectedTagId,select.target.value);
+  };
+
   useEffect(() => {
-    getAllRecipes();
-
-
+    getCategoryList();
+    getAllTags();
+    getAllRecipes(1);
   }, []);
+
 
 
   return (
@@ -210,6 +301,7 @@ console.log(data);
                 {...register("price",
                   {
                     required: "Price is required",
+                    valueAsNumber: true,
                     pattern: {
                       value: /^\d+(\.\d{2})?$/,
                       message: "Enter correct price"
@@ -221,43 +313,49 @@ console.log(data);
                 (<span className='text-danger my-3'>{errors.price.message}</span>)}
             </div>
 
-            <div className="form-group my-3 mb-3">
-              <select className="form-control"
+            <div className="form-group my-2 ">
+              <select className="form-select"
                 //  onChange={handleSelect} 
                 //  id="tags"
                 {...register('tagId', {
-                  required: "Please select an option",
+                  required: true,
+                  valueAsNumber: true,
                 }
                 )}>
 
                 <option >Select a Tag Id</option>
                 {tagsList.map((tag) => (
-                  <option key={tag.id} value={tag.id}>{tag.id} - {tag.name}</option>
+                  <option key={tag.id} value={tag.id}> {tag.name}</option>
                 ))}
 
               </select>
-              {errors.tagId &&
-                (<span className='text-danger my-3'>{errors.tagId.message}</span>)}
+              {errors.tagId && errors.tagId.type === "required" &&
+                (<span className='text-danger my-2 '>Please Selsct an option</span>)}
             </div>
 
-            <div className="form-group my-3 mb-3">
-              <select className="form-control"
+            <div className="form-group my-4">
+              <select className="form-select"
                 id="catgories"
-                {...register('categoriesIds')}>
+                {...register('categoriesIds',
+                  {
+                    // valueAsNumber: true,
+                  }
+                )}>
                 <option >Select a Cargory Id</option>
                 {categoriesList.map((category) => (
                   <option key={category.id} value={category.id}>
-                    {category.id} - {category.name}</option>
+                   {category.name}</option>
                 ))}
               </select>
             </div>
-            <div className="form-group my-3 mb-3">
+            <div className="form-group my-3 ">
               <input className="form-control"
                 type="file"
                 placeholder='choose file'
                 accept='image/*'
                 {...register("recipeImage",
-                  { required: 'image is required' })} />
+
+                )} />
 
               {/* {errors.recipeImage && <span>{errors.recipeImage.message}</span>} */}
             </div>
@@ -322,6 +420,132 @@ console.log(data);
 
       </Modal>
 
+      {/* Update Recipe Model   */}
+      <Modal show={modelState == "update-model"} onHide={handleClose}>
+
+        <Modal.Body>
+          <h4 className='text-center'>Update recipe</h4>
+          <form onSubmit={handleSubmit(updateRecipe)} >
+            <div className='form-group my-3 ' >
+              <input type="text" className="form-control text-muted"
+                placeholder='Recipe Name '
+                {...register("name",
+                  {
+                    required: true
+                  })}
+              />
+              {errors.name && errors.name.type === "required"
+                && (<span className='text-danger my-3'>Filed is required</span>)}
+            </div>
+
+
+            <div className='form-group my-3 ' >
+              <input type="number" className="form-control "
+                placeholder='Price '
+                {...register("price",
+                  {
+                    required: "Price is required",
+                    valueAsNumber: true,
+                    pattern: {
+                      value: /^\d+(\.\d{2})?$/,
+                      message: "Enter correct price"
+
+                    }
+                  })}
+              />
+              {errors.price &&
+                (<span className='text-danger my-3'>{errors.price.message}</span>)}
+            </div>
+
+            <div className="form-group my-2 ">
+              <select className="form-select"
+                //  onChange={handleSelect} 
+                //  id="tags"
+                {...register('tagId', {
+                  required: true,
+                  valueAsNumber: true,
+                }
+                )}>
+
+                <option >Select a Tag Id</option>
+                {tagsList.map((tag) => (
+                  <option key={tag.id} value={tag.id}>{tag.name}</option>
+                ))}
+
+              </select>
+              {errors.tagId && errors.tagId.type === "required" &&
+                (<span className='text-danger my-2 '>Please Selsct an option</span>)}
+            </div>
+
+            <div className="form-group my-4">
+              <select className="form-select"
+                id="catgories"
+                {...register('categoriesIds',
+                  {
+                    // valueAsNumber: true,
+                  }
+                )}>
+                <option >Select a Cargory Id</option>
+                {categoriesList?.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group my-3 ">
+              <input className="form-control"
+                type="file"
+                placeholder='choose file'
+                accept='image/*'
+                {...register("recipeImage",
+
+                )} />
+              <img className='w-100'
+                src={`https://upskilling-egypt.com:443/` +
+                  recipe?.imagePath} alt="" />
+
+              {/* {errors.recipeImage && <span>{errors.recipeImage.message}</span>} */}
+            </div>
+            <div className='form-group my-3 ' >
+              <textarea type="text" className="form-control" placeholder="Leave a comment here " rows={4}
+                {...register("description",
+                  {
+                    required: "Description is required"
+                  })}
+
+              ></textarea>
+              {errors.description &&
+                (<span className='text-danger my-3'>{errors.description.message}</span>)}
+            </div>
+            {/* -------------------------------------- */}
+
+
+
+            {/* 
+    <div className='form-group my-3 '>
+      <select id="tag" value={selectedTag} onChange={handleTagChange}>
+        <option value="">Select a Tag</option>
+        {tags.map(tag => (
+          <option key={recipe.tag.id} value={recipe.tag.name}>{recipe.tag.name}</option>
+        ))}
+      </select>
+    </div>
+*/}
+
+
+
+
+            {/* -------------------------------------------- */}
+
+            <div className="form-group">
+              <button className='btn btn-success w-100'>Update Recipes</button>
+            </div>
+          </form>
+
+
+        </Modal.Body>
+
+      </Modal>
 
 
 
@@ -340,65 +564,116 @@ console.log(data);
         </div>
 
         <div>
+          <div className="row my-2 ">
+            <div className="col-md-4">
+              <input 
+              onChange={getNameVAlue} placeholder='search by recipe name....' className='form-control my-2' type="text" />
+
+            </div>
+
+            <div className="col-md-4 p-2">
+              <select 
+              onChange={getTagValue} className="form-select">
+                <option >Select a Tag Id</option>
+                {tagsList.map((tag) => (
+                  <option key={tag.id} value={tag.id}> {tag.name}</option>
+                ))}
+
+              </select>
+            </div>
+
+            <div className="col-md-4 p-2">
+            <select 
+            onChange={getCategoryValue} className="form-select">
+                <option >Select a Category Id</option>
+                {categoriesList.map((category) => (
+                  <option key={category.id} value={category.id}>
+                     {category.name}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
           {recipesList.length > 0 ?
-            (<table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Name</th>
-                  <th scope="col">Image</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Price</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Tag</th>
-                  <th scope="col">Action</th>
+            <div>
+              <table className="table table-striped">
+                <thead className=' table-success'>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Tag</th>
+                    <th scope="col">Action</th>
 
-                </tr>
-              </thead>
-              <tbody>
-                {recipesList.map((recipe) => (
+                  </tr>
+                </thead>
+                <tbody>
+                  {recipesList.map((recipe, index) => (
 
-                  <tr key={recipe.id}>
-                    <th scope="row">{recipe.id}</th>
-                    <td >{recipe.name}</td>
-                    <td >
-                      <div className='img-container' >
-                        <img
-                          className=' img-fluid'
-                          src={
-                            `https://upskilling-egypt.com:443/` +
-                            recipe.imagePath} alt="" />
-                        {/* {recipe.recipeImage ? <img
+                    <tr key={recipe.id}>
+                      <th scope="row">{index + 1}</th>
+                      <td >{recipe.name}</td>
+                      <td >
+                        <div className='img-container' >
+                          <img
+                            className=' img-fluid'
+                            src={
+                              `https://upskilling-egypt.com:443/` +
+                              recipe.imagePath} alt="" />
+                          {/* {recipe.recipeImage ? <img
                           className=' img-fluid'
                           src={
                             `http://upskilling-egypt.com:3002/` +
                             recipe.recipeImage} alt="" /> : (
                           <img className='img-fluid'src={noData} />
                         )} */}
-                      </div>
-                    </td>
-                    <td >{recipe.description}</td>
-                    <td >{recipe.price}</td>
-                    <td >{recipe?.category[0]?.name}</td>
+                        </div>
+                      </td>
+                      <td >{recipe.description}</td>
+                      <td >{recipe.price}</td>
+                      <td >{recipe?.category[0]?.name}</td>
 
-                    <td >
-                      {recipe.tag.name}
+                      <td >
+                        {recipe.tag.name}
 
-                    </td>
-                    <td >
-                      <i onClick={() => showUpdateModel(category)} 
-                      className="fa-solid fa-pen-to-square mx-2 text-warning"></i>
-                      <i onClick={() => showDeletModel(recipe.id)}
-                        className="fa-solid fa-trash text-danger"></i>
-                    </td>
-                  </tr>
+                      </td>
+                      <td >
+                        <i onClick={() => showUpdateModel(recipe)}
+                          className="fa-solid fa-pen-to-square mx-2 text-warning"></i>
+                        <i onClick={() => showDeletModel(recipe.id)}
+                          className="fa-solid fa-trash text-danger"></i>
+                      </td>
+                    </tr>
 
-                ))}
-              </tbody>
-            </table>) :
-            (
-              <NoData />
-            )}
+                  ))}
+                </tbody>
+              </table>
+
+
+
+              <nav aria-label="...">
+                <ul className="pagination justify-content-center pagination-sm">
+                  {pagesArray.map((pageNo) => (
+                    <li key={pageNo} onClick={() => getAllRecipes(pageNo, searchString)} className="page-item">
+                      <a className="page-link">
+                        {pageNo}
+                      </a>
+                    </li>
+                  ))}
+
+
+                </ul>
+
+              </nav>
+
+            </div>
+            :
+
+            <NoData />
+          }
 
         </div>
 
@@ -409,4 +684,6 @@ console.log(data);
 
   )
 }
+
+
 

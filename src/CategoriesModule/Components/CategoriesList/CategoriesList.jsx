@@ -16,20 +16,20 @@ export default function CategoriesList() {
     handleSubmit,
     setValue,
     formState: { errors },
-   
+
   } = useForm();
 
 
   // Add Category API
   const onSubmit = (data) => {
     // console.log(data)
-    
+
     axios.post("https://upskilling-egypt.com:443/api/v1/Category/", data, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`
       }
     })
-    
+
       .then((response) => {
         toast.success("Add successfully", {
           position: "top-right",
@@ -43,7 +43,7 @@ export default function CategoriesList() {
         })
         handleClose();
         getCategoriesList();
-        
+
 
 
       })
@@ -51,14 +51,14 @@ export default function CategoriesList() {
         console.log(error)
       })
 
-      
-    
+
+
   };
   const [categoriesList, setCategoriesList] = useState([]);
   const [modelState, setModelState] = useState("close")
   const [itemId, setItemId] = useState(0);
-
-
+  const [pagesArray, setPagesArray] = useState([])
+  const [searchString, setSearchString] = useState(0);
   const showAddModel = () => {
     setValue("name", null);
     setModelState("model-one")
@@ -111,11 +111,11 @@ export default function CategoriesList() {
   //Update Category API
   const updateCategory = (data) => {
     axios
-    .put(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`,data ,{
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
-    })
+      .put(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
 
       .then((response) => {
         toast.success("Update successfully", {
@@ -138,15 +138,22 @@ export default function CategoriesList() {
 
 
 
-  const getCategoriesList = () => {
-    axios.get("https://upskilling-egypt.com:443/api/v1/Category/?pageSize=10&pageNumber=1",
+  const getCategoriesList = (pageNo, name) => {
+    axios.get("https://upskilling-egypt.com:443/api/v1/Category/",
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
+        params: {
+          pageSize: 5,
+          pageNumber: pageNo,
+          name: name
+
+        }
       })
       .then((response) => {
         setCategoriesList(response.data.data);
+        setPagesArray(Array(response.data.totalNumberOfPages).fill().map((_, i) => i + 1));
       })
       .catch((error) => {
         console.log(error);
@@ -155,9 +162,13 @@ export default function CategoriesList() {
   }
 
   useEffect(() => {
-    getCategoriesList()
+    getCategoriesList(1)
   }, [])
 
+  const getNameVAlue = (input) => {
+    setSearchString( input.target.value)
+    getCategoriesList(1, input.target.value);
+  }
 
 
   return (
@@ -256,34 +267,55 @@ export default function CategoriesList() {
         </div>
 
         <div>
+        <input onChange={getNameVAlue} placeholder='search by category name....' className='form-control my-2' type="text" />
+
           {categoriesList.length > 0 ?
-            (<table className="table">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Category Name</th>
-                  <th scope="col">Action</th>
+            <div>
 
-                </tr>
-              </thead>
-              <tbody>
-                {categoriesList.map((category) => (
+              <table className="table table-striped">
+                <thead className=' table-success'>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Category Name</th>
+                    <th scope="col">Action</th>
 
-                  <tr key={category.id}>
-                    <th scope="row">{category.id}</th>
-                    <td >{category.name}</td>
-                    <td >
-                      <i onClick={() => showUpdateModel(category)} className="fa-solid fa-pen-to-square mx-2 text-warning"></i>
-                      <i onClick={() => showDeletModel(category.id)} className="fa-solid fa-trash text-danger"></i>
-                    </td>
                   </tr>
+                </thead>
+                <tbody>
+                  {categoriesList.map((category, index) => (
 
-                ))}
-              </tbody>
-            </table>) :
-            (
-              <NoData />
-            )}
+                    <tr key={category.id}>
+                      <th scope="row">{index + 1}</th>
+                      <td >{category.name}</td>
+                      <td >
+                        <i onClick={() => showUpdateModel(category)} className="fa-solid fa-pen-to-square mx-2 text-warning"></i>
+                        <i onClick={() => showDeletModel(category.id)} className="fa-solid fa-trash text-danger"></i>
+                      </td>
+                    </tr>
+
+                  ))}
+                </tbody>
+              </table>
+
+              <nav aria-label="...">
+                <ul className="pagination justify-content-center pagination-sm">
+                  {pagesArray.map((pageNo) => (
+                    <li key={pageNo} onClick={() => getCategoriesList(pageNo,searchString)} className="page-item">
+                      <a className="page-link">
+                        {pageNo}
+                      </a>
+                    </li>
+                  ))}
+
+
+                </ul>
+
+              </nav>
+
+            </div>
+            :
+            <NoData />
+          }
 
         </div>
 
