@@ -60,9 +60,7 @@ function App() {
     {
       path: "/",
       element: 
-        // <ProtectedRoute adminData={adminData} >
-        //   <AuthLayout/>
-        // </ProtectedRoute>
+      
         <AuthLayout />
       ,
       errorElement: <NotFound />,
