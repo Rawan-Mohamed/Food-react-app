@@ -245,7 +245,7 @@ export default function RecipesList() {
   const getNameVAlue = (input) => {
     // console.log(target);
     setSearchString(input.target.value);
-    getAllRecipes(1, input.target.value),selectedTagId,selectedCateId;
+    getAllRecipes(1, input.target.value,selectedTagId,selectedCateId);
   }
 
   const getTagValue = (select) => {

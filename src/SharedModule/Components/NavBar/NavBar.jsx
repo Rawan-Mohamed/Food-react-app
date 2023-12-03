@@ -14,7 +14,7 @@ export default function NavBar({adminData}) {
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <a className="nav-link text-black" href="#">
-                  <img src={avater} alt='user-image' />
+                  <img src={avater} className='m-2' alt='user-image' />
                   {adminData?.userName || "user"}
                 </a>
               </li>
