@@ -26,19 +26,19 @@ export default function ResetPassRequest() {
         navigate("/reset-pass");
 
 
-       
-          toast.success("Mail sent successfull", {
-            position: "top-right",
-            autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            draggable: true,
-            pauseOnHover: true,
-            progress: undefined,
-            theme: "colored",
 
-          });
-       
+        toast.success("Mail sent successfull", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          draggable: true,
+          pauseOnHover: true,
+          progress: undefined,
+          theme: "colored",
+
+        });
+
       })
       .catch((error) => {
         toast(error.response.data.message, {
@@ -72,7 +72,8 @@ export default function ResetPassRequest() {
                 <h4>Request Reset  Password</h4>
                 <span className=' text-muted'>Please Enter Your Email And Check Your Inbox</span>
                 {/* /Email/ */}
-                <div className="form-group my-3 position-relative">
+                <div className="form-group my-3 input-icons position-relative">
+                  <i className="icons fa-solid fa-envelope position-absolute text-success  " />
                   <input
                     placeholder='Enter your E-mail'
                     className='form-control'

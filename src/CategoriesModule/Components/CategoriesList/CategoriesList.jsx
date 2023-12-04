@@ -267,7 +267,11 @@ export default function CategoriesList() {
         </div>
 
         <div>
-        <input onChange={getNameVAlue} placeholder='search by category name....' className='form-control my-2' type="text" />
+          <div  className='icon-input position-relative'>
+          <i className="icons fa-solid fa-search position-absolute text-success" />
+          <input onChange={getNameVAlue} placeholder='search by category name....' className='form-control my-2' type="text" />
+
+          </div>
 
           {categoriesList.length > 0 ?
             <div>

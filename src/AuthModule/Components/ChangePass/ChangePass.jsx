@@ -78,7 +78,8 @@ export default function ChangePass({ handleClose }) {
               <p>Enter your details below</p>
 
               {/* // old Password */}
-              <div className="form-group my-3">
+              <div className="form-group my-3 position-relative">
+              <i className="icons fa-solid fa-lock position-absolute text-success" />
                 <input
                   placeholder='Old Password'
                   className='form-control ps-4 mb-1'
@@ -92,7 +93,8 @@ export default function ChangePass({ handleClose }) {
                   <span className='text-danger'>{errors.oldPassword.message}</span>)}
               </div>
               {/* //New Password */}
-              <div className="form-group my-3">
+              <div className="form-group my-3 position-relative">
+              <i className="icons fa-solid fa-lock position-absolute text-success" />
                 <input
                   placeholder='New Password'
                   className='form-control ps-4 mb-1'
@@ -113,7 +115,8 @@ export default function ChangePass({ handleClose }) {
                   <span className='text-danger'>{errors?.newPassword?.message}</span>)}
               </div>
               {/* //Confirm Password */}
-              <div className="form-group my-3">
+              <div className="form-group my-3 position-relative">
+              <i className="icons fa-solid fa-lock position-absolute text-success" />
                 <input
                   placeholder='Confirm New Password'
                   className='form-control ps-4 mb-1'

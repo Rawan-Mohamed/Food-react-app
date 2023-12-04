@@ -23,13 +23,11 @@ export default function RecipesList() {
   const [itemId, setItemId] = useState(0);
   const [tagsList, setTagsList] = useState([]);
   const [categoriesList, setCategoriesList] = useState([]);
-  // const [selectedTag, setSelectedTag] = useState('');
-  // const [tableData, setTableData] = useState([]);
   const [recipe, setRecipe] = useState();
   const [pagesArray, setPagesArray] = useState([])
   const [searchString, setSearchString] = useState(0);
-  const [selectedTagId,setSelectedTagId ] = useState(0);
-  const [selectedCateId,setSelectedCateId ] = useState(0);
+  const [selectedTagId, setSelectedTagId] = useState(0);
+  const [selectedCateId, setSelectedCateId] = useState(0);
 
 
   const showAddModel = () => {
@@ -47,9 +45,6 @@ export default function RecipesList() {
   const handleClose = () => setModelState("close");
 
 
-
-
-
   // Add recipe API
   const onSubmit = (data) => {
     // -------------------
@@ -60,14 +55,7 @@ export default function RecipesList() {
     addFormData.append("tagId", data['tagId']);
     addFormData.append("categoriesIds", data['categoriesIds']);
     addFormData.append("recipeImage", data['recipeImage'][0]);
-    // 
-    // if (addFormData) {
-    //   addFormData.forEach((file, index) => {
-    //      addFormData.append(`recipeImage[${index}]`, file);
-    //   });
-    // }
 
-    // -------------------
     console.log(data);
     axios.post("https://upskilling-egypt.com:443/api/v1/Recipe/", addFormData
       // { 
@@ -106,7 +94,7 @@ export default function RecipesList() {
   };
 
   //Get Recipe API
-  const getAllRecipes = (pageNo, name,tagId,categoryId) => {
+  const getAllRecipes = (pageNo, name, tagId, categoryId) => {
     axios.get("https://upskilling-egypt.com:443/api/v1/Recipe/", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
@@ -115,8 +103,8 @@ export default function RecipesList() {
         pageSize: 5,
         pageNumber: pageNo,
         name: name,
-        tagId:tagId,
-        categoryId:categoryId,
+        tagId: tagId,
+        categoryId: categoryId,
 
       }
 
@@ -161,8 +149,15 @@ export default function RecipesList() {
 
   //Update Recipe API
   const updateRecipe = (data) => {
+    const addFormData = new FormData();
+    addFormData.append("name", data['name']);
+    addFormData.append("price", data['price']);
+    addFormData.append("description", data['description']);
+    addFormData.append("tagId", data['tagId']);
+    addFormData.append("categoriesIds", data['categoriesIds']);
+    addFormData.append("recipeImage", data['recipeImage'][0]);
     axios
-      .put(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`, data, {
+      .put(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`, addFormData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
@@ -202,8 +197,7 @@ export default function RecipesList() {
     setModelState("update-model")
   }
 
-
-  // ------------------------------------------
+  //Get Tag API
   const getAllTags = () => {
     // Fetch tags from the API
     axios.get('https://upskilling-egypt.com:443/api/v1/tag/', {
@@ -219,7 +213,7 @@ export default function RecipesList() {
       });
   };
 
-
+  //Get Category List
   const getCategoryList = () => {
     // Fetch category from the API
     axios.get('https://upskilling-egypt.com:443/api/v1/Category/', {
@@ -241,21 +235,20 @@ export default function RecipesList() {
   // }, []);
 
 
-
   const getNameVAlue = (input) => {
     // console.log(target);
     setSearchString(input.target.value);
-    getAllRecipes(1, input.target.value,selectedTagId,selectedCateId);
+    getAllRecipes(1, input.target.value, selectedTagId, selectedCateId);
   }
 
   const getTagValue = (select) => {
     setSelectedTagId(select.target.value)
-    getAllRecipes(1,null,select.target.value,selectedCateId);
+    getAllRecipes(1, null, select.target.value, selectedCateId);
   };
 
   const getCategoryValue = (select) => {
     setSelectedCateId(select.target.value)
-    getAllRecipes(1,null,selectedTagId,select.target.value);
+    getAllRecipes(1, null, selectedTagId, select.target.value);
   };
 
   useEffect(() => {
@@ -344,7 +337,7 @@ export default function RecipesList() {
                 <option >Select a Cargory Id</option>
                 {categoriesList.map((category) => (
                   <option key={category.id} value={category.id}>
-                   {category.name}</option>
+                    {category.name}</option>
                 ))}
               </select>
             </div>
@@ -548,7 +541,6 @@ export default function RecipesList() {
       </Modal>
 
 
-
       <div className='row mx-4 p-3'>
         <div className='col-md-6'>
           <div>
@@ -565,15 +557,19 @@ export default function RecipesList() {
 
         <div>
           <div className="row my-2 ">
-            <div className="col-md-4">
-              <input 
-              onChange={getNameVAlue} placeholder='search by recipe name....' className='form-control my-2' type="text" />
+            <div className="col-md-4 ">
+              <div className='icon-input position-relative'>
+                <i className="icons fa-solid fa-search position-absolute text-success" />
+                <input
+                  onChange={getNameVAlue} placeholder='search by recipe name....' className='form-control my-2' type="text" />
+              </div>
+
 
             </div>
 
             <div className="col-md-4 p-2">
-              <select 
-              onChange={getTagValue} className="form-select">
+              <select
+                onChange={getTagValue} className="form-select">
                 <option >Select a Tag Id</option>
                 {tagsList.map((tag) => (
                   <option key={tag.id} value={tag.id}> {tag.name}</option>
@@ -583,12 +579,12 @@ export default function RecipesList() {
             </div>
 
             <div className="col-md-4 p-2">
-            <select 
-            onChange={getCategoryValue} className="form-select">
+              <select
+                onChange={getCategoryValue} className="form-select">
                 <option >Select a Category Id</option>
                 {categoriesList.map((category) => (
                   <option key={category.id} value={category.id}>
-                     {category.name}</option>
+                    {category.name}</option>
                 ))}
               </select>
             </div>
@@ -623,7 +619,8 @@ export default function RecipesList() {
                             src={
                               `https://upskilling-egypt.com:443/` +
                               recipe.imagePath} alt="" />
-                          {/* {recipe.recipeImage ? <img
+                          {/* {recipe.recipeImage ?
+                           <img
                           className=' img-fluid'
                           src={
                             `http://upskilling-egypt.com:3002/` +
@@ -651,7 +648,6 @@ export default function RecipesList() {
                   ))}
                 </tbody>
               </table>
-
 
 
               <nav aria-label="...">

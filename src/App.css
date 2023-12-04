@@ -1,60 +1,69 @@
-.Auth-container{
-    background-color: aquamarine;
+.Auth-container {
+    /* background-color: aquamarine; */
     background-image: url(/src/assets/images/ella-olsson-C1Q3qOTlegg-unsplash\ 1.png);
 }
-.bg-overlay{
-    background-image:linear-gradient(to right top,rgba(55,140,47,0.63),rgba(0,0,0,0.6));
-    
+.bg-overlay {
+    background-image: linear-gradient(to right top, rgba(55, 140, 47, 0.63), rgba(0, 0, 0, 0.6));
 }
-.sidebar-cont{
-    background-color:#1F263E ; 
-    
+.sidebar-cont {
+    background-color: #1F263E;
+    border-top-right-radius: 15%;
+    border-style: hidden ;
 }
+
 .sidebar-container .ps-sidebar-container {
-background-color:#1F263E ; 
- height: 100vh;
-color: #fff;
-border-top-right-radius: 15%;
-position: relative;
-
+    background-color: #1F263E;
+    height: 100vh;
+    color: #fff;
+    border-top-right-radius: 15%;
+    position: relative;
 }
 
-
-
-
-.sidebar-container .ps-sidebar-container .ps-menu-button:hover{
-    background-color:rgba(0, 146, 71, 0.1);
-    
+.sidebar-container .ps-sidebar-container .ps-menu-button:hover {
+    background-color: rgba(0, 146, 71, 0.1);
 }
-
-.header-content{
-    background-image:url(../src/assets/images/header-background.png) ;
+.header-content {
+    background-image: url(../src/assets/images/header-background.png);
     background-size: cover;
     background-position: 100% 100%;
 }
 
-.section-container{
+.section-container {
     background-color: #F0FFEF;
 }
 
-
-
-.img-container{
+.img-container {
     width: 50px;
 }
 
-/* .img-logo {
-    width: 60px;
+.img-logo {
+    left:8px;
+}
+
+/* .img-logo span.ps-menu-icon.css-wx7wi4 {
+    width:100px !important;
 } */
 
-
-
-
-.img-logo span.ps-menu-icon.css-wx7wi4 {
-    width:200px !important;
-    
+.sidebar-logo {
+    width: 180px;
+    padding-top: 8px;
 
 }
-.nav-bg{
+
+/* span.ps-menu-icon.css-wx7wi4{
+    flex-shrink: 0;
+} */
+
+.nav-bg {
     background-color: rgba(248, 249, 251, 1);
+}
+
+.icons {
+    top: calc(30%);
+    left: 0.5rem;
+}
+
+form .input-icons .form-control, .icon-input .form-control {
+    left: .5rem;
+    padding-left: 2.5rem;
 }

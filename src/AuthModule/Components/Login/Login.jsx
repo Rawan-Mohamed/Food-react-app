@@ -22,7 +22,7 @@ export default function Login({ saveAdminData }) {
       .post("https://upskilling-egypt.com:443/api/v1/Users/Login", data)
       .then((response) => {
         console.log(response);
-    
+
         localStorage.setItem("adminToken", response.data.token); //m3ia el 7aga el tsbt any logged in 
         saveAdminData();
         navigate("/dashboard")
@@ -50,48 +50,51 @@ export default function Login({ saveAdminData }) {
               <h2>Log in</h2>
               <p>Welcome Back! Please enter your details</p>
               {/* /Email/ */}
-              <div className="form-grup my-3 input-icons">
+              <div className="form-group my-3 input-icons position-relative">
+                <i className="icons fa-solid fa-envelope position-absolute text-success  "/>
+
                 <input
                   placeholder='Enter your E-mail'
-                  className='form-control input-field '
+                  className='form-control input-field'
                   type="email"
                   {...register("email", {
                     required: true,
-                    pattern:{ 
+                    pattern: {
                       value: /^[^@]+@[^@]+\.[^@.]{2,}$/,
-                    message:"email is required"}
+                      message: "email is required"
+                    }
                   })}
                 />
-                {errors.email &&  (
+                {errors.email && (
                   <span className='text-danger'>{errors.email.message}</span>)}
                 {/* {errors.email && errors.email.type === "pattern" && (
                   <span className='text-danger'>invaild mail</span>)} */}
               </div>
               {/* //Password */}
-              <div className="form-group my-3">
-             
+              <div className="form-group my-3 input-icons position-relative">
+                <i className="icons fa-solid fa-lock position-absolute text-success " />
                 <input
                   placeholder='Password'
                   className='form-control'
-                  
+
                   type="password"
                   {...register("password", {
-                    required:"password is required",
+                    required: "password is required",
                   })}
-                  
+
                 />
-                {errors.password &&  (
+                {errors.password && (
                   <span className='text-danger'>{errors.password.message}</span>)}
               </div>
 
-              <div className='row'>
+              <div >
                 {/* Register password */}
-                <div className='register col-md-6'>
-                <a href="#" className="text-black">Register now</a>
-              </div>
+                {/* <div className='register col-md-6'>
+                  <a href="#" className="text-black">Register now</a>
+                </div> */}
                 {/* Forget password */}
-                <div className='form-group col-md-6 forgetpass text-end '>
-                  <Link to = "/reset-pass-request" className=' text-success'>
+                <div className='form-group forgetpass text-end '>
+                  <Link to="/reset-pass-request" className=' text-success'>
                     Forget Password?
                   </Link>
                 </div>

@@ -75,7 +75,8 @@ export default function ResetPass() {
                 <h4 className=' fw-bolder fs-6'>Request Password</h4>
                 <span className=' text-muted'>Please Enter Your Otp  or Check Your Inbox</span>
                 {/* /Email/ */}
-                <div className="form-group my-3">
+                <div className="form-group my-3 input-icons position-relative">
+                <i className="icons fa-solid fa-envelope position-absolute text-success  "/>
                   <input
                     placeholder='Email'
                     className='form-control text-muted'
@@ -94,7 +95,8 @@ export default function ResetPass() {
                     <span className='text-danger'>invaild mail</span>)} */}
                 </div>
                 {/* OTP */}
-                <div className="form-group my-3">
+                <div className="form-group my-3 input-icons position-relative">
+                <i className="icons fa-solid fa-key position-absolute text-success" />
                   <input
                     placeholder='OTP'
                     className='form-control mb-1 text-muted'
@@ -108,7 +110,8 @@ export default function ResetPass() {
                     <span className='text-danger'>{errors?.seed?.message}</span>)}
                 </div>
                 {/* //New Password */}
-                <div className="form-group my-3">
+                <div className="form-group my-3 input-icons position-relative">
+                <i className="icons fa-solid fa-lock position-absolute text-success" />
                   <input
                     placeholder='New Password'
                     className='form-control text-muted'
@@ -130,7 +133,8 @@ export default function ResetPass() {
 
                 </div>
                 {/* //Confirm Password */}
-                <div className="form-group my-3">
+                <div className="form-group my-3 input-icons position-relative">
+                <i className="icons fa-solid fa-lock position-absolute text-success" />
                   <input
                     placeholder='Confirm New Password'
                     className='form-control text-muted'

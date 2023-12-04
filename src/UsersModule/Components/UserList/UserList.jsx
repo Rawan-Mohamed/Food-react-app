@@ -126,7 +126,11 @@ export default function UserList() {
         <span className=' text-muted'>You can check all details</span>
 
         <div>
-          <input onChange={getNameVAlue} placeholder='search by user name....' className='form-control my-2' type="text" />
+          <div  className='icon-input position-relative'>
+          <i className="icons fa-solid fa-search position-absolute text-success" />
+          <input onChange={getNameVAlue} placeholder='search by user name....' className='form-control input-field my-2' type="text" />
+
+          </div>
           {userList.length > 0 ?
             <div>
               <table className="table my-5 table-striped">
