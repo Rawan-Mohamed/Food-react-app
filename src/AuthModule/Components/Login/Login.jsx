@@ -73,6 +73,7 @@ export default function Login({ saveAdminData }) {
               {/* //Password */}
               <div className="form-group my-3 input-icons position-relative">
                 <i className="icons fa-solid fa-lock position-absolute text-success " />
+{/* <i className="fa-solid fa-eye" /> */}
                 <input
                   placeholder='Password'
                   className='form-control'

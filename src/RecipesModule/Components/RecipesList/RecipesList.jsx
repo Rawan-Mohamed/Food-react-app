@@ -9,6 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 
+
 export default function RecipesList() {
   const {
     register,
@@ -25,9 +26,9 @@ export default function RecipesList() {
   const [categoriesList, setCategoriesList] = useState([]);
   const [recipe, setRecipe] = useState();
   const [pagesArray, setPagesArray] = useState([])
-  const [searchString, setSearchString] = useState(0);
-  const [selectedTagId, setSelectedTagId] = useState(0);
-  const [selectedCateId, setSelectedCateId] = useState(0);
+  const [searchString, setSearchString] = useState("");
+  const [selectedTagId, setSelectedTagId] = useState("");
+  const [selectedCateId, setSelectedCateId] = useState("");
 
 
   const showAddModel = () => {
@@ -48,6 +49,24 @@ export default function RecipesList() {
   // Add recipe API
   const onSubmit = (data) => {
     // -------------------
+    // try way 
+    // const formData = new FormData();
+
+    // for (const key in data) {
+    //   if (data.hasOwnProperty(key)) {
+    //     const value = data[key];
+    //     if (Array.isArray(value)) {
+    //       for (let i = 0; i < value.length; i++) {
+    //         formData.append(`${key}[${i}]`, value[i]);
+    //       }
+    //     } else {
+    //       formData.append(key, value);
+    //     }
+    //   }
+    // }
+
+
+    // ---------------------------
     const addFormData = new FormData();
     addFormData.append("name", data['name']);
     addFormData.append("price", data['price']);
@@ -55,7 +74,15 @@ export default function RecipesList() {
     addFormData.append("tagId", data['tagId']);
     addFormData.append("categoriesIds", data['categoriesIds']);
     addFormData.append("recipeImage", data['recipeImage'][0]);
-
+    // Object.entries(data).forEach(([key, value]) => {
+    //   if (Array.isArray(value)) {
+    //     value.forEach((item, index) => {
+    //       formData.append(`${key}[${index}]`, item);
+    //     });
+    //   } else {
+    //     formData.append(key, value);
+    //   }
+    // })
     console.log(data);
     axios.post("https://upskilling-egypt.com:443/api/v1/Recipe/", addFormData
       // { 
@@ -149,6 +176,31 @@ export default function RecipesList() {
 
   //Update Recipe API
   const updateRecipe = (data) => {
+
+      // -------------------
+    // try way 
+    // const formData = new FormData();
+
+    // for (let key in data) {
+    //   if (data.hasOwnProperty(key)) {
+    //     const value = data[key];
+
+    //     if (key === 'recipImage') {
+    //       if (value && value.length > 0) {
+    //         value = value[0];
+    //       } else {
+    //         // handle case when no file is selected
+    //         console.log('No file selected for the recipient image.');
+    //       }
+    //     }
+
+    //     formData.append(key, value[0]);
+    //   }
+    // }
+
+
+    // ---------------------------
+
     const addFormData = new FormData();
     addFormData.append("name", data['name']);
     addFormData.append("price", data['price']);
@@ -614,19 +666,19 @@ export default function RecipesList() {
                       <td >{recipe.name}</td>
                       <td >
                         <div className='img-container' >
-                          <img
+                          {/* <img
                             className=' img-fluid'
                             src={
                               `https://upskilling-egypt.com:443/` +
-                              recipe.imagePath} alt="" />
-                          {/* {recipe.recipeImage ?
+                              recipe.imagePath} alt="" /> */}
+                          {recipe.imagePath ?
                            <img
                           className=' img-fluid'
                           src={
-                            `http://upskilling-egypt.com:3002/` +
-                            recipe.recipeImage} alt="" /> : (
+                            `https://upskilling-egypt.com:443/` +
+                            recipe.imagePath} alt="" /> : (
                           <img className='img-fluid'src={noData} />
-                        )} */}
+                        )}
                         </div>
                       </td>
                       <td >{recipe.description}</td>
