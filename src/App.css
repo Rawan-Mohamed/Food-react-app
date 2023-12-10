@@ -36,17 +36,18 @@
     width: 50px;
 }
 
-.img-logo {
+/* .img-logo {
     left:8px;
-}
+} */
 
 /* .img-logo span.ps-menu-icon.css-wx7wi4 {
     width:100px !important;
 } */
 
 .sidebar-logo {
-    width: 180px;
-    padding-top: 8px;
+    width: 70px;
+    padding-top: 20px;
+   margin-left: 5px;
 
 }
 
@@ -56,6 +57,7 @@
 
 .nav-bg {
     background-color: rgba(248, 249, 251, 1);
+    margin-top: 10px;
 }
 
 .icons {
@@ -66,4 +68,23 @@
 form .input-icons .form-control, .icon-input .form-control {
     left: .5rem;
     padding-left: 2.5rem;
+}
+
+.sidebarIcon{
+    padding-top: 30px;
+}
+
+
+.sidebar-container .ps-sidebar-container .img-logo{
+    margin: 20px 0;
+}
+.sidebar-container .ps-sidebar-container .img-logo a:hover{
+    background-color: transparent
+
+}
+.sidebar-container .ps-sidebar-container .img-logo span{
+    width: fit-content;
+}
+.img-logo img{
+    width: 75px;
 }

@@ -235,18 +235,19 @@ export default function RecipesList() {
   }
 
   const showUpdateModel = (item) => {
-    setRecipe(item);
-    getAllTags();
-    getCategoryList();
-    setRecipe(item);
-    setValue("name", item.name);
-    setValue("price", item.price);
-    setValue("description", item.description);
-    setValue("tagId", item.tag.id);
-    setValue("categoriesIds", item.category[0].id);
-    // setValue("recipeImage", item.imagePath[0]);
-    setItemId(item.id);
+    // setRecipe(item);
     setModelState("update-model")
+    getCategoryList();
+    getAllTags();
+    setRecipe(item);
+    setValue("name", item?.name);
+    setValue("price", item?.price);
+    setValue("description", item?.description);
+    setValue("tagId", item?.tag?.id);
+    setValue("categoriesIds", item?.category[0]?.id);
+    // setValue("recipeImage", item.imagePath[0]);
+    setItemId(item?.id);
+    
   }
 
   //Get Tag API
@@ -304,9 +305,10 @@ export default function RecipesList() {
   };
 
   useEffect(() => {
+    getAllRecipes(1);
     getCategoryList();
     getAllTags();
-    getAllRecipes(1);
+    
   }, []);
 
 
@@ -404,7 +406,7 @@ export default function RecipesList() {
 
               {/* {errors.recipeImage && <span>{errors.recipeImage.message}</span>} */}
             </div>
-            <div className='form-group my-3 ' >
+            <div className='form-group my-3 '>
               <textarea type="text" className="form-control" placeholder="Leave a comment here " rows={4}
                 {...register("description",
                   {
@@ -527,10 +529,10 @@ export default function RecipesList() {
                 id="catgories"
                 {...register('categoriesIds',
                   {
-                    // valueAsNumber: true,
+                    valueAsNumber: true,
                   }
                 )}>
-                <option >Select a Cargory Id</option>
+                <option >Select a Cargory </option>
                 {categoriesList?.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}</option>
@@ -576,9 +578,6 @@ export default function RecipesList() {
       </select>
     </div>
 */}
-
-
-
 
             {/* -------------------------------------------- */}
 
@@ -644,7 +643,7 @@ export default function RecipesList() {
 
           {recipesList.length > 0 ?
             <div>
-              <table className="table table-striped">
+              <table className="table table-striped rounded-3">
                 <thead className=' table-success'>
                   <tr>
                     <th scope="col">#</th>

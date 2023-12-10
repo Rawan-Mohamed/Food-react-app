@@ -15,6 +15,8 @@ export default function UserList() {
   const [itemId, setItemId] = useState(0);
   const [pagesArray, setPagesArray] = useState([])
   const [searchString, setSearchString] = useState('');
+  const [selectedRole, setSelectedRole] = useState('');
+  
 
   const handleClose = () => setModelState("close");
 
@@ -55,7 +57,7 @@ export default function UserList() {
 
 
   //Get User API
-  const getAllUsers = (pageNo, name) => {
+  const getAllUsers = (pageNo, name, roleId) => {
     axios.get("https://upskilling-egypt.com:443/api/v1/Users/", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
@@ -63,13 +65,13 @@ export default function UserList() {
       params: {
         pageSize: 5,
         pageNumber: pageNo,
-        userName:name ,
+        userName: name,
+        groups: roleId,
 
       }
 
     })
       .then((response) => {
-        
         setPagesArray(Array(response.data.totalNumberOfPages).fill().map((_, i) => i + 1));
         setUserList(response?.data?.data);
       })
@@ -87,10 +89,15 @@ export default function UserList() {
   }, []);
 
   const getNameVAlue = (input) => {
-    // console.log(target);
+    console.log(input);
     setSearchString(input.target.value);
     getAllUsers(1, input.target.value);
   }
+
+  const getRoleValue = (select) => {
+    setSelectedRole(select.target.value);
+    getAllUsers(1, searchString, select.target.value);
+  };
 
   return (
     <>
@@ -125,12 +132,28 @@ export default function UserList() {
         <h6>Users Table Details</h6>
         <span className=' text-muted'>You can check all details</span>
 
-        <div>
-          <div  className='icon-input position-relative'>
-          <i className="icons fa-solid fa-search position-absolute text-success" />
-          <input onChange={getNameVAlue} placeholder='search by user name....' className='form-control input-field my-2' type="text" />
+        <div >
+          <div className='row my-2'>
+            <div className='col-md-6'>
+              <div className='icon-input position-relative'>
+                <i className="icons fa-solid fa-search position-absolute text-success" />
+                <input onChange={getNameVAlue} placeholder='search by user name....' className='form-control input-field my-2' type="text" />
 
+              </div>
+            </div>
+            <div className='col-md-6 my-2'>
+              <div>
+                <select className='form-select' onChange={getRoleValue}>
+                  <option value="" className='text-muted'> search by Role</option>
+                  <option value="1">admin</option>
+                  <option value="2">user</option>
+                </select>
+              </div>
+
+            </div>
           </div>
+
+
           {userList.length > 0 ?
             <div>
               <table className="table my-5 table-striped">
@@ -140,7 +163,9 @@ export default function UserList() {
                     <th scope="col">User Name</th>
                     <th scope="col">Image</th>
                     <th scope="col">Phone Number</th>
-                    <th scope="col">Action</th>
+                    {selectedRole !== '1' &&
+                      <th scope="col">Action</th>}
+                      
 
                   </tr>
                 </thead>
@@ -165,12 +190,13 @@ export default function UserList() {
                       <td >{user.phoneNumber}</td>
 
 
-
+                      {selectedRole  !== '1' && (
                       <td >
 
                         <i onClick={() => showDeletModel(user.id)}
                           className="fa-solid fa-trash text-danger"></i>
-                      </td>
+                      </td> )}
+                      
                     </tr>
 
                   ))}
@@ -180,7 +206,8 @@ export default function UserList() {
               <nav aria-label="...">
                 <ul className="pagination justify-content-center pagination-sm">
                   {pagesArray.map((pageNo) => (
-                    <li key={pageNo} onClick={() => getAllUsers(pageNo, searchString)} className="page-item">
+
+                    <li key={pageNo} onClick={() => getAllUsers(pageNo, searchString, selectedRole)} className="page-item">
                       <a className="page-link">
                         {pageNo}
                       </a>
@@ -196,9 +223,9 @@ export default function UserList() {
 
 
             :
-            
-              <NoData />
-            }
+
+            <NoData />
+          }
 
         </div>
 

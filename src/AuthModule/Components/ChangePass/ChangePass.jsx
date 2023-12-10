@@ -78,11 +78,11 @@ export default function ChangePass({ handleClose }) {
               <p>Enter your details below</p>
 
               {/* // old Password */}
-              <div className="form-group my-3 position-relative">
+              <div className="form-group my-3 input-icons position-relative">
               <i className="icons fa-solid fa-lock position-absolute text-success" />
                 <input
                   placeholder='Old Password'
-                  className='form-control ps-4 mb-1'
+                  className='form-control '
                   type="password"
                   {...register("oldPassword", {
                     required: "This field is required",
@@ -93,11 +93,11 @@ export default function ChangePass({ handleClose }) {
                   <span className='text-danger'>{errors.oldPassword.message}</span>)}
               </div>
               {/* //New Password */}
-              <div className="form-group my-3 position-relative">
+              <div className="form-group my-3  input-icons position-relative">
               <i className="icons fa-solid fa-lock position-absolute text-success" />
                 <input
                   placeholder='New Password'
-                  className='form-control ps-4 mb-1'
+                  className='form-control '
                   type="password"
                   {...register("newPassword", {
                     required: "This field is required",
@@ -115,11 +115,11 @@ export default function ChangePass({ handleClose }) {
                   <span className='text-danger'>{errors?.newPassword?.message}</span>)}
               </div>
               {/* //Confirm Password */}
-              <div className="form-group my-3 position-relative">
+              <div className="form-group my-3 input-icons position-relative">
               <i className="icons fa-solid fa-lock position-absolute text-success" />
                 <input
                   placeholder='Confirm New Password'
-                  className='form-control ps-4 mb-1'
+                  className='form-control '
                   type="password"
                   {...register("confirmNewPassword", {
                     validate: (value) =>
