@@ -58,7 +58,7 @@ export default function CategoriesList() {
   const [modelState, setModelState] = useState("close")
   const [itemId, setItemId] = useState(0);
   const [pagesArray, setPagesArray] = useState([])
-  const [searchString, setSearchString] = useState(0);
+  const [searchString, setSearchString] = useState("");
   const showAddModel = () => {
     setValue("name", null);
     setModelState("model-one")
