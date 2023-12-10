@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import Header from '../../../SharedModule/Components/Header/Header'
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
-import CategoriesList from '../../../CategoriesModule/Components/CategoriesList/CategoriesList';
 import HeaderHome from '../../../SharedModule/Components/Header/HeaderHome';
 
 
