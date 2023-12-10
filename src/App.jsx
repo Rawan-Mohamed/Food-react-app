@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import Login from './AuthModule/Components/Login/Login';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, createHashRouter, RouterProvider } from 'react-router-dom';
 import ProtectedRoute from './SharedModule/Components/ProtectedRoute/ProtectedRoute';
 import MasterLayout from './SharedModule/Components/MasterLayout/MasterLayout';
 import UserList from './UsersModule/Components/UserList/UserList';
@@ -40,7 +40,7 @@ function App() {
     }
   }, []);
 
-  const routes = createBrowserRouter([
+  const routes = createHashRouter([
     {
       path: 'dashboard',
       element: (
