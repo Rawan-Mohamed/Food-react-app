@@ -5,7 +5,7 @@ export default function HeaderHome({ title, paragraph }) {
     return (
 
         <>
-    
+
           <div className='header-content m-2 rounded-3 text-white'>
             <div className=' container-fluid'>
               <div className="row px-4 py-2 g-0 align-items-center">
@@ -14,15 +14,15 @@ export default function HeaderHome({ title, paragraph }) {
                   <p>{paragraph}</p>
                 </div>
                 <div className="col-md-2">
-                  <img className=' img-fluid' src={headerBg} alt='' />
+                  <img className=' img-fluid header-animation ' src={headerBg} alt='' />
                 </div>
               </div>
             </div>
-    
-    
+
+
           </div>
         </>
-    
+
         //   );
       )
 }

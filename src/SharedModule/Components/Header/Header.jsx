@@ -13,7 +13,7 @@ export default function Header({ title, paragraph }) {
               <p>{paragraph}</p>
             </div>
             <div className="col-md-2">
-              <img className=' img-fluid' src={headerBg} alt='' />
+              <img className=' img-fluid header-animation' src={headerBg} alt='' />
             </div>
           </div>
         </div>

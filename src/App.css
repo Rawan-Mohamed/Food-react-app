@@ -179,3 +179,15 @@ form .input-icons i:after{
   .custom-card .card-text {
     font-size: 1rem;
   }
+  .header-animation {
+    animation: moveUpDown 2s linear infinite;
+  }
+
+  @keyframes moveUpDown {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px); /* Adjust the value for the desired movement */
+    }
+  }
