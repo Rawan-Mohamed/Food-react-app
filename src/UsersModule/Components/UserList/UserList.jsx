@@ -189,7 +189,7 @@ export default function UserList() {
                       <th scope="row">{index + 1}</th>
                       <td >{user.userName}</td>
                       <td className='text-center'>
-                        <div className='' >
+                        <div className='img-container' >
                           {user.imagePath ?
                             <img
                               className=' img-fluid '
