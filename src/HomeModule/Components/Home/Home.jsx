@@ -1,19 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import HeaderHome from '../../../SharedModule/Components/Header/HeaderHome';
+import { AuthContext } from '../../../Context/AuthContext';
 
 
 
 export default function Home() {
   {/* ------------------------------------------ */ }
-
+  const {userData} =useContext(AuthContext)
   {/* ------------------------------------------ */ }
   return (
     <>
       <HeaderHome
-        title={'Welcom UpSkilling'}
+        title={"Welcome "+userData?.userName || "user"}
         paragraph={'This is a welcoming screen for the entry of the application , you can now see the options'}
-      
+
       />
 
 

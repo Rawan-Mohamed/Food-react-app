@@ -5,7 +5,7 @@ import NavBar from './../NavBar/NavBar';
 
 
 
-export default function MasterLayout({ adminData }) {
+export default function MasterLayout({ userData }) {
   return (
 
     <>
@@ -15,7 +15,7 @@ export default function MasterLayout({ adminData }) {
         </div>
         <div className="w-100">
           <div>
-            <NavBar adminData={adminData} />
+            <NavBar userData={userData} />
             <div className='container-fluid'>
               <Outlet />
             </div>

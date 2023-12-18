@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import logo from '../../../assets/images/1.png'
 import { useForm } from "react-hook-form"
 import { ToastContainer, toast } from 'react-toastify';
@@ -6,10 +6,14 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { AuthContext } from '../../../Context/AuthContext';
+import { ToastContext } from '../../../Context/ToastContext';
 
 export default function ResetPassRequest() {
   const navigate = useNavigate();
-  // some {properties} and receive return from hook useForm 
+  const { baseUrl } = useContext(AuthContext);
+  const { getToastValue } = useContext(ToastContext)
+  // some {properties} and receive return from hook useForm
   const {
     register,
     handleSubmit,
@@ -21,36 +25,16 @@ export default function ResetPassRequest() {
     // console.log(data);
     setIsLoading(true);
     axios
-      .post("https://upskilling-egypt.com:443/api/v1/Users/Reset/Request", data)
+      .post(`${baseUrl}/Users/Reset/Request`, data)
       .then((response) => {
         navigate("/reset-pass");
 
+        getToastValue("sucess","Mail sent successfull")
 
-
-        toast.success("Mail sent successfull", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          pauseOnHover: true,
-          progress: undefined,
-          theme: "colored",
-
-        });
 
       })
       .catch((error) => {
-        toast(error.response.data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          pauseOnHover: true,
-          progress: undefined,
-          theme: "colored",
-        });
+        getToastValue(error.response.data.message)
         // console.log(error.response.data.message);
 
       });

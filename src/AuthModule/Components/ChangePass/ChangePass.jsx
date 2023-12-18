@@ -1,15 +1,19 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import logo from '../../../assets/images/1.png'
 import { useForm } from "react-hook-form"
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthContext } from '../../../Context/AuthContext';
+import { ToastContext } from '../../../Context/ToastContext';
 
 
 export default function ChangePass({ handleClose }) {
   const navigate = useNavigate();
-  // some {properties} and receive return from hook useForm 
+  const { requestHeaders, baseUrl } = useContext(AuthContext)
+  const { getToastValue } = useContext(ToastContext)
+  // some {properties} and receive return from hook useForm
 
   const {
     register,
@@ -18,42 +22,22 @@ export default function ChangePass({ handleClose }) {
     getValues,
   } = useForm();
 
-  // bdal mn handlha gwa el handleSubmit h3ml function a st2bl feha 
+  // bdal mn handlha gwa el handleSubmit h3ml function a st2bl feha
   const onSubmit = (data) => {
     // console.log(data);
     axios
-      .put("https://upskilling-egypt.com:443/api/v1/Users/ChangePassword", data, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-
-        },
+      .put(`${baseUrl}/Users/ChangePassword`, data, {
+        headers: requestHeaders,
       }
       )
       .then((response) => {
         handleClose();
-        toast.success("password changed successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        })
+        getToastValue('success',"password changed successfully")
         navigate("/login")
       })
       .catch((error) => {
-        toast(error.response.data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
+        getToastValue(error.response.data.message)
+
         // console.log(error.response.data.message);
       });
   };
@@ -86,7 +70,7 @@ export default function ChangePass({ handleClose }) {
                   type="password"
                   {...register("oldPassword", {
                     required: "This field is required",
-                    
+
                   })}
                 />
                 {errors.oldPassword &&  (

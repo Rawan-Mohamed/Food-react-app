@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../../../SharedModule/Components/Header/Header'
 import axios from 'axios';
 import NoData from '../../../SharedModule/Components/NoData/NoData';
@@ -7,10 +7,24 @@ import { useForm } from 'react-hook-form';
 import noData from "../../../assets/images/no-data.png"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { ToastContext } from './../../../Context/ToastContext';
+import { AuthContext } from '../../../Context/AuthContext';
+import CustomPagination from '../../../SharedModule/Components/CustomPagination/CustomPagination';
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 
 export default function CategoriesList() {
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [modelState, setModelState] = useState("close")
+  const [itemId, setItemId] = useState(0);
+  const [pagesArray, setPagesArray] = useState([])
+  const [searchString, setSearchString] = useState("");
+  const { requestHeaders, baseUrl } = useContext(AuthContext)
+  const { getToastValue } = useContext(ToastContext)
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true); // Add this line
 
+  const handleClose = () => setModelState("close");
   const {
     register,
     handleSubmit,
@@ -23,42 +37,25 @@ export default function CategoriesList() {
   // Add Category API
   const onSubmit = (data) => {
     // console.log(data)
-
-    axios.post("https://upskilling-egypt.com:443/api/v1/Category/", data, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`
-      }
+    axios.post(`${baseUrl}/Category/`, data, {
+      headers: requestHeaders
     })
-
       .then((response) => {
-        toast.success("Add successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        })
+        getToastValue("success", "Added Successfuly")
         handleClose();
         getCategoriesList();
 
-
-
       })
       .catch((error) => {
-        console.log(error)
+        // console.log(error)
+        getToastValue(error.response.data.message)
+
       })
 
 
 
   };
-  const [categoriesList, setCategoriesList] = useState([]);
-  const [modelState, setModelState] = useState("close")
-  const [itemId, setItemId] = useState(0);
-  const [pagesArray, setPagesArray] = useState([])
-  const [searchString, setSearchString] = useState("");
+
   const showAddModel = () => {
     setValue("name", null);
     setModelState("model-one")
@@ -79,71 +76,46 @@ export default function CategoriesList() {
 
   // const [show, setShow] = useState(false);
   // const handleClose = () => setShow(false);
-  const handleClose = () => setModelState("close");
+
 
   //Delete Category API
   const deleteCategory = () => {
-    axios.delete(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
+    axios.delete(`${baseUrl}/Category/${itemId}`, {
+      headers: requestHeaders
     })
-
       .then((response) => {
-        toast.success("delete successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        })
+        getToastValue("success", "deleted Successfuly")
         getCategoriesList(response.data.data);
         handleClose();
       })
       .catch((error) => {
-        console.log(error);
+        getToastValue(error.response.data.message)
       })
   }
 
   //Update Category API
   const updateCategory = (data) => {
     axios
-      .put(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`, data, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        },
+      .put(`${baseUrl}/Category/${itemId}`, data, {
+        headers: requestHeaders
       })
 
       .then((response) => {
-        toast.success("Update successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        })
+        getToastValue("success", "Updated Successfuly")
         getCategoriesList();
         handleClose();
       })
       .catch((error) => {
-        console.log(error);
+        getToastValue(error.response.data.message)
       })
   }
 
 
 
   const getCategoriesList = (pageNo, name) => {
-    axios.get("https://upskilling-egypt.com:443/api/v1/Category/",
+    axios.get(`${baseUrl}/Category/`,
       {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        },
+        headers: requestHeaders,
         params: {
           pageSize: 5,
           pageNumber: pageNo,
@@ -162,8 +134,8 @@ export default function CategoriesList() {
   }
 
   useEffect(() => {
-    getCategoriesList(1)
-  }, [])
+    getCategoriesList(currentPage)
+  }, [currentPage])
 
   const getNameVAlue = (input) => {
     setSearchString( input.target.value)
@@ -276,7 +248,7 @@ export default function CategoriesList() {
           {categoriesList.length > 0 ?
             <div>
 
-              <table className="table table-striped">
+              <table className="table custom-table table-striped">
                 <thead className=' table-success'>
                   <tr>
                     <th scope="col">#</th>
@@ -301,7 +273,7 @@ export default function CategoriesList() {
                 </tbody>
               </table>
 
-              <nav aria-label="...">
+              {/* <nav aria-label="...">
                 <ul className="pagination justify-content-center pagination-sm">
                   {pagesArray.map((pageNo) => (
                     <li key={pageNo} onClick={() => getCategoriesList(pageNo,searchString)} className="page-item">
@@ -314,11 +286,20 @@ export default function CategoriesList() {
 
                 </ul>
 
-              </nav>
+              </nav> */}
+              <CustomPagination totalPages={pagesArray.length} currentPage={currentPage} onPageChange={setCurrentPage}/>
 
             </div>
             :
-            <NoData />
+            // <NoData />
+            <div  className=' sweet-loading d-flex justify-content-center align-items-center p-5 m-3'>
+            <ClimbingBoxLoader
+              size={30}
+              color="#009247"
+              loading={loading}
+
+            />
+          </div>
           }
 
         </div>

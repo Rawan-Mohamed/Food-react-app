@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Header from '../../../SharedModule/Components/Header/Header'
 import axios from 'axios';
 import NoData from '../../../SharedModule/Components/NoData/NoData';
@@ -7,6 +7,10 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from 'react-bootstrap/Modal';
 import { useEffect } from 'react';
+import { AuthContext } from '../../../Context/AuthContext';
+import { ToastContext } from '../../../Context/ToastContext';
+import CustomPagination from './../../../SharedModule/Components/CustomPagination/CustomPagination';
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 
 export default function UserList() {
@@ -16,8 +20,12 @@ export default function UserList() {
   const [pagesArray, setPagesArray] = useState([])
   const [searchString, setSearchString] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
-  
-
+  const { requestHeaders, baseUrl } = useContext(AuthContext)
+  const { getToastValue } = useContext(ToastContext);
+  const [currentPage, setCurrentPage] = useState(1);
+  // const [totalPages, setTotalPages] = useState(1);
+  // const [visiblePages, setVisiblePages] = useState([]); // Currently visible pages
+  const [loading, setLoading] = useState(true); // Add this line
   const handleClose = () => setModelState("close");
 
 
@@ -29,75 +37,78 @@ export default function UserList() {
 
   //Delete Users API
   const deleteUsers = () => {
-    axios.delete(`https://upskilling-egypt.com:443/api/v1/Users/${itemId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
+    // Check if the logged-in user is an admin
+    if (userList.some(user => user.id === itemId && user.userRole === 'admin')) {
+      // Display a toast message indicating that admins cannot be deleted
+      getToastValue("error", error.response.data.message);
+      handleClose();
+      return; // Do not proceed with the deletion
+    }
+
+    axios.delete(`${baseUrl}/Users/${itemId}`, {
+      headers: requestHeaders,
     })
 
       .then((response) => {
-        toast.success("delete successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        })
+        getToastValue("success", "delete successfully");
         handleClose();
-        getAllUsers(response.data.data);
+        // getAllUsers(response.data.data);
+        getAllUsers(currentPage, searchString, selectedRole);
+
 
       })
       .catch((error) => {
-        console.log(error);
+        getToastValue("error", error.response.data.message);
       })
   }
 
 
   //Get User API
   const getAllUsers = (pageNo, name, roleId) => {
-    axios.get("https://upskilling-egypt.com:443/api/v1/Users/", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
+    setLoading(true);
+    axios.get(`${baseUrl}/Users/`, {
+      headers: requestHeaders,
       params: {
         pageSize: 5,
         pageNumber: pageNo,
         userName: name,
         groups: roleId,
 
-      }
 
+      }
     })
       .then((response) => {
         setPagesArray(Array(response.data.totalNumberOfPages).fill().map((_, i) => i + 1));
         setUserList(response?.data?.data);
+        // setCurrentPage(pageNo);
       })
       .catch((error) => {
         console.log(error);
       })
+      .finally(() => {
+        setLoading(false); // Set loading to false when the request is complete
+      });
   }
 
 
   useEffect(() => {
-    getAllUsers(1);
+    getAllUsers(currentPage);
 
 
 
-  }, []);
+  }, [currentPage]);
 
   const getNameVAlue = (input) => {
     console.log(input);
     setSearchString(input.target.value);
-    getAllUsers(1, input.target.value);
+    getAllUsers(1, input.target.value, selectedRole);
   }
 
   const getRoleValue = (select) => {
     setSelectedRole(select.target.value);
     getAllUsers(1, searchString, select.target.value);
   };
+
 
   return (
     <>
@@ -156,75 +167,71 @@ export default function UserList() {
 
           {userList.length > 0 ?
             <div>
-              <table className="table my-5 table-striped">
+              <table className="table custom-table my-5 table-striped">
                 <thead className=' table-success'>
-                  <tr>
+                  <tr className='text-center'>
                     <th scope="col">#</th>
                     <th scope="col">User Name</th>
                     <th scope="col">Image</th>
                     <th scope="col">Phone Number</th>
+                    <th scope="col">Email</th>
+
                     {selectedRole !== '1' &&
                       <th scope="col">Action</th>}
-                      
+
 
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className='text-center'>
                   {userList.map((user, index) => (
 
                     <tr key={user.id}>
                       <th scope="row">{index + 1}</th>
                       <td >{user.userName}</td>
-                      <td >
-                        <div className='img-container' >
+                      <td className='text-center'>
+                        <div className='' >
                           {user.imagePath ?
                             <img
-                              className=' img-fluid'
+                              className=' img-fluid '
                               src={
                                 `http://upskilling-egypt.com:3002/` +
-                                user.imagePath} alt="" /> : (
-                              <img className='img-fluid' src={noData} />
-                            )}
+                                user.imagePath} alt="" /> :
+                            <i className="fas fa-user-circle text-success " />
+
+                            //     (
+                            //   <img className='img-fluid' src={noData} />
+                            // )
+                          }
                         </div>
                       </td>
                       <td >{user.phoneNumber}</td>
+                      <td >{user.email}</td>
 
 
-                      {selectedRole  !== '1' && (
-                      <td >
+                      {selectedRole !== '1' && (
+                        <td className='text-center'>
 
-                        <i onClick={() => showDeletModel(user.id)}
-                          className="fa-solid fa-trash text-danger"></i>
-                      </td> )}
-                      
+                          <i onClick={() => showDeletModel(user.id)}
+                            className="fa-solid fa-trash text-danger"></i>
+                        </td>)}
+
                     </tr>
 
                   ))}
                 </tbody>
               </table>
-
-              <nav aria-label="...">
-                <ul className="pagination justify-content-center pagination-sm">
-                  {pagesArray.map((pageNo) => (
-
-                    <li key={pageNo} onClick={() => getAllUsers(pageNo, searchString, selectedRole)} className="page-item">
-                      <a className="page-link">
-                        {pageNo}
-                      </a>
-                    </li>
-                  ))}
-
-
-                </ul>
-
-              </nav>
+              <CustomPagination totalPages={pagesArray.length} currentPage={currentPage} onPageChange={setCurrentPage} />
 
             </div>
+            :// <NoData />
+            <div  className=' sweet-loading d-flex justify-content-center align-items-center p-5 m-3'>
+              <ClimbingBoxLoader
+                size={30}
+                color="#009247"
+                loading={loading}
 
-
-            :
-
-            <NoData />
+              />
+            </div>
           }
 
         </div>

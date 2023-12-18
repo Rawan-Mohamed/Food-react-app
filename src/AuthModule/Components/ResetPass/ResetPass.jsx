@@ -1,14 +1,18 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import logo from '../../../assets/images/1.png'
 import { useForm } from "react-hook-form"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../../Context/AuthContext';
+import { ToastContext } from '../../../Context/ToastContext';
 
 
 export default function ResetPass() {
   const navigate = useNavigate();
+  const {baseUrl} = useContext(AuthContext)
+  const { getToastValue } = useContext(ToastContext)
   const {
     register,
     handleSubmit,
@@ -21,35 +25,18 @@ export default function ResetPass() {
   const onSubmit = (data) => {
     // console.log(data);
     axios
-      .post("https://upskilling-egypt.com:443/api/v1/Users/Reset", data)
+      .post(`${baseUrl}/Users/Reset`, data)
       .then((response) => {
         navigate("/login");
-        toast.success("Password changed successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          pauseOnHover: true,
-          progress: undefined,
-          theme: "colored",
+        getToastValue("sucess","password is reset login now!")
 
-        });
 
 
       })
       .catch((error) => {
-        toast(error.response.data.message, {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          draggable: true,
-          pauseOnHover: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        console.log(error.response.data.message);
+        getToastValue("error", error.response.data.message)
+
+        // console.log(error.response.data.message);
 
       });
   };
@@ -103,7 +90,7 @@ export default function ResetPass() {
                     type="text"
                     {...register("seed", {
                       required: "Otp is required",
-                      
+
                     })}
                   />
                   {errors.seed && (

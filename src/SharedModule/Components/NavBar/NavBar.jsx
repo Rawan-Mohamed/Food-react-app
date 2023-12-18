@@ -1,7 +1,7 @@
 import React from 'react'
 import avater from "../../../assets/images/avatar.png"
 
-export default function NavBar({adminData}) {
+export default function NavBar({userData}) {
 
   return (
     <>
@@ -15,7 +15,7 @@ export default function NavBar({adminData}) {
               <li className="nav-item">
                 <a className="nav-link text-black" href="#">
                   <img src={avater} className='m-2' alt='user-image' />
-                  {adminData?.userName || "user"}
+                  {userData?.userName || "user"}
                 </a>
               </li>
             </ul>

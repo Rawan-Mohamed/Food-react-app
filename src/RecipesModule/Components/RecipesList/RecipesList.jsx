@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Header from '../../../SharedModule/Components/Header/Header'
 import axios from 'axios';
 import NoData from '../../../SharedModule/Components/NoData/NoData';
@@ -7,6 +7,10 @@ import { useForm } from 'react-hook-form';
 import noData from "../../../assets/images/no-data.png"
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthContext } from '../../../Context/AuthContext';
+import { ToastContext } from '../../../Context/ToastContext';
+import CustomPagination from '../../../SharedModule/Components/CustomPagination/CustomPagination';
+import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 
 
 
@@ -29,12 +33,22 @@ export default function RecipesList() {
   const [searchString, setSearchString] = useState("");
   const [selectedTagId, setSelectedTagId] = useState("");
   const [selectedCateId, setSelectedCateId] = useState("");
-
+  const { requestHeaders, baseUrl, userRole } = useContext(AuthContext)
+  const { getToastValue } = useContext(ToastContext)
+  const [recipeDetails, setRecipeDetails] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true); // Add this line
 
   const showAddModel = () => {
 
     setValue("name", null);
     setModelState("Add-model")
+  }
+
+  const showViewModel = (id) => {
+    setItemId(id);
+    setModelState("view-model")
+    getRecipesDetails(id)
   }
 
 
@@ -45,76 +59,36 @@ export default function RecipesList() {
 
   const handleClose = () => setModelState("close");
 
+  // Formate Data
+  const appendToFormData = (data) => {
+    const formData = new FormData();
+    formData.append("name", data["name"]);
+    formData.append("price", data["price"]);
+    formData.append("description", data["description"]);
+    formData.append("tagId", data["tagId"]);
+    formData.append("categoriesIds", data["categoriesIds"]);
+    formData.append("recipeImage", data["recipeImage"][0]);
+    return formData;
+  };
 
   // Add recipe API
   const onSubmit = (data) => {
-    // -------------------
-    // try way 
-    // const formData = new FormData();
-
-    // for (const key in data) {
-    //   if (data.hasOwnProperty(key)) {
-    //     const value = data[key];
-    //     if (Array.isArray(value)) {
-    //       for (let i = 0; i < value.length; i++) {
-    //         formData.append(`${key}[${i}]`, value[i]);
-    //       }
-    //     } else {
-    //       formData.append(key, value);
-    //     }
-    //   }
-    // }
-
-
-    // ---------------------------
-    const addFormData = new FormData();
-    addFormData.append("name", data['name']);
-    addFormData.append("price", data['price']);
-    addFormData.append("description", data['description']);
-    addFormData.append("tagId", data['tagId']);
-    addFormData.append("categoriesIds", data['categoriesIds']);
-    addFormData.append("recipeImage", data['recipeImage'][0]);
-    // Object.entries(data).forEach(([key, value]) => {
-    //   if (Array.isArray(value)) {
-    //     value.forEach((item, index) => {
-    //       formData.append(`${key}[${index}]`, item);
-    //     });
-    //   } else {
-    //     formData.append(key, value);
-    //   }
-    // })
     console.log(data);
-    axios.post("https://upskilling-egypt.com:443/api/v1/Recipe/", addFormData
-      // { 
-      //   ...addFormData,
-      //    recipeImage: addFormData.recipeImage[0] 
-      //   },
-
+    const addFormData = appendToFormData(data);
+    axios.post(`${baseUrl}/Recipe/`, addFormData
       , {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-          "Content-Type": "multipart/form-data"
-        }
+        headers: requestHeaders
       })
       .then((response) => {
-        console.log(response)
-        toast.success("Add successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        })
+        getToastValue("sucess", "Added successfully")
+
         handleClose();
         getAllRecipes();
 
 
       })
       .catch((error) => {
-        console.log(error)
+        getToastValue(error.response.data.message)
       })
 
     reset();
@@ -122,10 +96,8 @@ export default function RecipesList() {
 
   //Get Recipe API
   const getAllRecipes = (pageNo, name, tagId, categoryId) => {
-    axios.get("https://upskilling-egypt.com:443/api/v1/Recipe/", {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
+    axios.get(`${baseUrl}/Recipe/`, {
+      headers: requestHeaders,
       params: {
         pageSize: 5,
         pageNumber: pageNo,
@@ -148,89 +120,36 @@ export default function RecipesList() {
 
   //Delete Recipe API
   const deleteRecipes = () => {
-    axios.delete(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
+    axios.delete(`${baseUrl}/Recipe/${itemId}`, {
+      headers: requestHeaders,
     })
 
       .then((response) => {
-        toast.success("delete successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        })
+        getToastValue("sucess", "Recipe deleted successfully")
         handleClose();
         getAllRecipes(response.data.data);
 
       })
       .catch((error) => {
-        console.log(error);
+        getToastValue(error.response.data.message)
       })
   }
 
   //Update Recipe API
   const updateRecipe = (data) => {
-
-      // -------------------
-    // try way 
-    // const formData = new FormData();
-
-    // for (let key in data) {
-    //   if (data.hasOwnProperty(key)) {
-    //     const value = data[key];
-
-    //     if (key === 'recipImage') {
-    //       if (value && value.length > 0) {
-    //         value = value[0];
-    //       } else {
-    //         // handle case when no file is selected
-    //         console.log('No file selected for the recipient image.');
-    //       }
-    //     }
-
-    //     formData.append(key, value[0]);
-    //   }
-    // }
-
-
-    // ---------------------------
-
-    const addFormData = new FormData();
-    addFormData.append("name", data['name']);
-    addFormData.append("price", data['price']);
-    addFormData.append("description", data['description']);
-    addFormData.append("tagId", data['tagId']);
-    addFormData.append("categoriesIds", data['categoriesIds']);
-    addFormData.append("recipeImage", data['recipeImage'][0]);
+    const updateFormData = appendToFormData(data);
     axios
-      .put(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`, addFormData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-        },
+      .put(`${baseUrl}/Recipe/${itemId}`, updateFormData, {
+        headers: requestHeaders,
       })
 
       .then((response) => {
-        toast.success("Update successfully", {
-          position: "top-right",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        })
+        getToastValue("sucess", "Updated successfully")
         getAllRecipes();
         handleClose();
       })
       .catch((error) => {
-        console.log(error);
+        getToastValue(error.response.data.message)
       })
   }
 
@@ -247,16 +166,14 @@ export default function RecipesList() {
     setValue("categoriesIds", item?.category[0]?.id);
     // setValue("recipeImage", item.imagePath[0]);
     setItemId(item?.id);
-    
+
   }
 
   //Get Tag API
   const getAllTags = () => {
     // Fetch tags from the API
-    axios.get('https://upskilling-egypt.com:443/api/v1/tag/', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
+    axios.get(`${baseUrl}/tag/`, {
+      headers: requestHeaders,
     })
       .then(response => {
         setTagsList(response?.data);
@@ -269,10 +186,8 @@ export default function RecipesList() {
   //Get Category List
   const getCategoryList = () => {
     // Fetch category from the API
-    axios.get('https://upskilling-egypt.com:443/api/v1/Category/', {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
+    axios.get(`${baseUrl}/Category/`, {
+      headers: requestHeaders,
     })
       .then(response => {
         setCategoriesList(response?.data?.data);
@@ -282,11 +197,25 @@ export default function RecipesList() {
       });
   }
 
-  // useEffect(() => {
-  //   getCategoryList();
-  //   getAllTags();
-  // }, []);
 
+  //View Recipe API
+  const getRecipesDetails = (id) => {
+    axios
+      .get(`${baseUrl}/Recipe/${id}`, {
+        headers: requestHeaders,
+      })
+
+      .then((response) => {
+        // getToastValue("success","deleted Successfuly")
+        // handleClose();
+        console.log(response.data);
+        setRecipeDetails(response.data);
+
+      })
+      .catch((error) => {
+        console.log(error);
+      })
+  }
 
   const getNameVAlue = (input) => {
     // console.log(target);
@@ -303,13 +232,29 @@ export default function RecipesList() {
     setSelectedCateId(select.target.value)
     getAllRecipes(1, null, selectedTagId, select.target.value);
   };
+  const addToFavorit = () => {
+    axios.post(`${baseUrl}/userRecipe/`,
+      {
+        recipeId: itemId,
+      },
+      {
+        headers: requestHeaders
+      })
+      .then(response => {
+        getToastValue("success", "Added Successfuly")
+        handleClose();
+        console.log(response)
+      })
+      .catch((error) =>
+        console.log(error));
+  }
 
   useEffect(() => {
-    getAllRecipes(1);
+    getAllRecipes(currentPage);
     getCategoryList();
     getAllTags();
-    
-  }, []);
+
+  }, [currentPage]);
 
 
 
@@ -322,276 +267,268 @@ export default function RecipesList() {
         paragraph={'You can now add your items that any user can order it from the Application and you can edit'}
 
       />
+      {userRole === 'SuperAdmin' ?
+        <>
+          {/* Add Recipe Model   */}
+          <Modal show={modelState == "Add-model"} onHide={handleClose}>
 
-      {/* Add Recipe Model   */}
-      <Modal show={modelState == "Add-model"} onHide={handleClose}>
-
-        <Modal.Body>
-          <h4 className='text-center'>Add new recipe</h4>
-          <form onSubmit={handleSubmit(onSubmit)} >
-            <div className='form-group my-3 ' >
-              <input type="text" className="form-control text-muted"
-                placeholder='Recipe Name '
-                {...register("name",
-                  {
-                    required: true
-                  })}
-              />
-              {errors.name && errors.name.type === "required"
-                && (<span className='text-danger my-3'>Filed is required</span>)}
-            </div>
+            <Modal.Body>
+              <h4 className='text-center'>Add new recipe</h4>
+              <form onSubmit={handleSubmit(onSubmit)} >
+                <div className='form-group my-3 ' >
+                  <input type="text" className="form-control text-muted"
+                    placeholder='Recipe Name '
+                    {...register("name",
+                      {
+                        required: true
+                      })}
+                  />
+                  {errors.name && errors.name.type === "required"
+                    && (<span className='text-danger my-3'>Filed is required</span>)}
+                </div>
 
 
-            <div className='form-group my-3 ' >
-              <input type="number" className="form-control "
-                placeholder='Price '
-                {...register("price",
-                  {
-                    required: "Price is required",
-                    valueAsNumber: true,
-                    pattern: {
-                      value: /^\d+(\.\d{2})?$/,
-                      message: "Enter correct price"
+                <div className='form-group my-3 ' >
+                  <input type="number" className="form-control "
+                    placeholder='Price '
+                    {...register("price",
+                      {
+                        required: "Price is required",
+                        valueAsNumber: true,
+                        pattern: {
+                          value: /^\d+(\.\d{2})?$/,
+                          message: "Enter correct price"
 
+                        }
+                      })}
+                  />
+                  {errors.price &&
+                    (<span className='text-danger my-3'>{errors.price.message}</span>)}
+                </div>
+
+                <div className="form-group my-2 ">
+                  <select className="form-select"
+                    //  onChange={handleSelect}
+                    //  id="tags"
+                    {...register('tagId', {
+                      required: true,
+                      valueAsNumber: true,
                     }
-                  })}
-              />
-              {errors.price &&
-                (<span className='text-danger my-3'>{errors.price.message}</span>)}
-            </div>
+                    )}>
 
-            <div className="form-group my-2 ">
-              <select className="form-select"
-                //  onChange={handleSelect} 
-                //  id="tags"
-                {...register('tagId', {
-                  required: true,
-                  valueAsNumber: true,
-                }
-                )}>
+                    <option >Select a Tag Id</option>
+                    {tagsList.map((tag) => (
+                      <option key={tag.id} value={tag.id}> {tag.name}</option>
+                    ))}
 
-                <option >Select a Tag Id</option>
-                {tagsList.map((tag) => (
-                  <option key={tag.id} value={tag.id}> {tag.name}</option>
-                ))}
+                  </select>
+                  {errors.tagId && errors.tagId.type === "required" &&
+                    (<span className='text-danger my-2 '>Please Selsct an option</span>)}
+                </div>
 
-              </select>
-              {errors.tagId && errors.tagId.type === "required" &&
-                (<span className='text-danger my-2 '>Please Selsct an option</span>)}
-            </div>
+                <div className="form-group my-4">
+                  <select className="form-select"
+                    id="catgories"
+                    {...register('categoriesIds',
+                      {
+                        // valueAsNumber: true,
+                      }
+                    )}>
+                    <option >Select a Cargory Id</option>
+                    {categoriesList.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group my-3 ">
+                  <input className="form-control"
+                    type="file"
+                    placeholder='choose file'
+                    accept='image/*'
+                    {...register("recipeImage",
 
-            <div className="form-group my-4">
-              <select className="form-select"
-                id="catgories"
-                {...register('categoriesIds',
-                  {
-                    // valueAsNumber: true,
-                  }
-                )}>
-                <option >Select a Cargory Id</option>
-                {categoriesList.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group my-3 ">
-              <input className="form-control"
-                type="file"
-                placeholder='choose file'
-                accept='image/*'
-                {...register("recipeImage",
+                    )} />
 
-                )} />
+                  {/* {errors.recipeImage && <span>{errors.recipeImage.message}</span>} */}
+                </div>
+                <div className='form-group my-3 '>
+                  <textarea type="text" className="form-control" placeholder="Leave a comment here " rows={4}
+                    {...register("description",
+                      {
+                        required: "Description is required"
+                      })}
 
-              {/* {errors.recipeImage && <span>{errors.recipeImage.message}</span>} */}
-            </div>
-            <div className='form-group my-3 '>
-              <textarea type="text" className="form-control" placeholder="Leave a comment here " rows={4}
-                {...register("description",
-                  {
-                    required: "Description is required"
-                  })}
+                  ></textarea>
+                  {errors.description &&
+                    (<span className='text-danger my-3'>{errors.description.message}</span>)}
+                </div>
 
-              ></textarea>
-              {errors.description &&
-                (<span className='text-danger my-3'>{errors.description.message}</span>)}
-            </div>
-            {/* -------------------------------------- */}
+                <div className="form-group">
+                  <button className='btn btn-success w-100'>Add Recipes</button>
+                </div>
+              </form>
 
 
+            </Modal.Body>
 
-            {/* 
-            <div className='form-group my-3 '>
-              <select id="tag" value={selectedTag} onChange={handleTagChange}>
-                <option value="">Select a Tag</option>
-                {tags.map(tag => (
-                  <option key={recipe.tag.id} value={recipe.tag.name}>{recipe.tag.name}</option>
-                ))}
-              </select>
-            </div>
- */}
+          </Modal >
 
 
+          {/* Delete Recipe Model   */}
+          <Modal show={modelState == "delete-model"
+          } onHide={handleClose} >
+
+            <Modal.Body>
+              <div className='text-center'>
+                <img src={noData} alt="" />
+                <h5 className='my-3'>Delete This Recipe ?</h5>
+                <span className='text-muted'>are you sure you want to delete this item ? if you are sure just click on delete it</span>
+                <div className='text-end my-3'>
+                  <button onClick={deleteRecipes} className='btn btn-outline-danger'>Delete this item</button>
+
+                </div>
+              </div>
 
 
-            {/* -------------------------------------------- */}
+            </Modal.Body>
 
-            <div className="form-group">
-              <button className='btn btn-success w-100'>Add Recipes</button>
-            </div>
-          </form>
+          </Modal >
 
+          {/* Update Recipe Model   */}
+          < Modal show={modelState == "update-model"} onHide={handleClose} >
 
-        </Modal.Body>
-
-      </Modal>
-
-
-      {/* Delete Recipe Model   */}
-      <Modal show={modelState == "delete-model"} onHide={handleClose}>
-
-        <Modal.Body>
-          <div className='text-center'>
-            <img src={noData} alt="" />
-            <h5 className='my-3'>Delete This Recipe ?</h5>
-            <span className='text-muted'>are you sure you want to delete this item ? if you are sure just click on delete it</span>
-            <div className='text-end my-3'>
-              <button onClick={deleteRecipes} className='btn btn-outline-danger'>Delete this item</button>
-
-            </div>
-          </div>
+            <Modal.Body>
+              <h4 className='text-center'>Update recipe</h4>
+              <form onSubmit={handleSubmit(updateRecipe)} >
+                <div className='form-group my-3 ' >
+                  <input type="text" className="form-control text-muted"
+                    placeholder='Recipe Name '
+                    {...register("name",
+                      {
+                        required: true
+                      })}
+                  />
+                  {errors.name && errors.name.type === "required"
+                    && (<span className='text-danger my-3'>Filed is required</span>)}
+                </div>
 
 
-        </Modal.Body>
+                <div className='form-group my-3 ' >
+                  <input type="number" className="form-control "
+                    placeholder='Price '
+                    {...register("price",
+                      {
+                        required: "Price is required",
+                        valueAsNumber: true,
+                        pattern: {
+                          value: /^\d+(\.\d{2})?$/,
+                          message: "Enter correct price"
 
-      </Modal>
+                        }
+                      })}
+                  />
+                  {errors.price &&
+                    (<span className='text-danger my-3'>{errors.price.message}</span>)}
+                </div>
 
-      {/* Update Recipe Model   */}
-      <Modal show={modelState == "update-model"} onHide={handleClose}>
-
-        <Modal.Body>
-          <h4 className='text-center'>Update recipe</h4>
-          <form onSubmit={handleSubmit(updateRecipe)} >
-            <div className='form-group my-3 ' >
-              <input type="text" className="form-control text-muted"
-                placeholder='Recipe Name '
-                {...register("name",
-                  {
-                    required: true
-                  })}
-              />
-              {errors.name && errors.name.type === "required"
-                && (<span className='text-danger my-3'>Filed is required</span>)}
-            </div>
-
-
-            <div className='form-group my-3 ' >
-              <input type="number" className="form-control "
-                placeholder='Price '
-                {...register("price",
-                  {
-                    required: "Price is required",
-                    valueAsNumber: true,
-                    pattern: {
-                      value: /^\d+(\.\d{2})?$/,
-                      message: "Enter correct price"
-
+                <div className="form-group my-2 ">
+                  <select className="form-select"
+                    //  onChange={handleSelect}
+                    //  id="tags"
+                    {...register('tagId', {
+                      required: true,
+                      valueAsNumber: true,
                     }
-                  })}
-              />
-              {errors.price &&
-                (<span className='text-danger my-3'>{errors.price.message}</span>)}
+                    )}>
+
+                    <option >Select a Tag Id</option>
+                    {tagsList.map((tag) => (
+                      <option key={tag.id} value={tag.id}>{tag.name}</option>
+                    ))}
+
+                  </select>
+                  {errors.tagId && errors.tagId.type === "required" &&
+                    (<span className='text-danger my-2 '>Please Selsct an option</span>)}
+                </div>
+
+                <div className="form-group my-4">
+                  <select className="form-select"
+                    id="catgories"
+                    {...register('categoriesIds',
+                      {
+                        valueAsNumber: true,
+                      }
+                    )}>
+                    <option >Select a Cargory </option>
+                    {categoriesList?.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group my-3 ">
+                  <input className="form-control"
+                    type="file"
+                    placeholder='choose file'
+                    accept='image/*'
+                    {...register("recipeImage",
+
+                    )} />
+                  <img className='w-100'
+                    src={`https://upskilling-egypt.com:443/` +
+                      recipe?.imagePath} alt="" />
+
+                  {/* {errors.recipeImage && <span>{errors.recipeImage.message}</span>} */}
+                </div>
+                <div className='form-group my-3 ' >
+                  <textarea type="text" className="form-control" placeholder="Leave a comment here " rows={4}
+                    {...register("description",
+                      {
+                        required: "Description is required"
+                      })}
+
+                  ></textarea>
+                  {errors.description &&
+                    (<span className='text-danger my-3'>{errors.description.message}</span>)}
+                </div>
+
+                <div className="form-group">
+                  <button className='btn btn-success w-100'>Update Recipes</button>
+                </div>
+              </form>
+
+
+            </Modal.Body>
+
+          </Modal >
+        </>
+
+        : <Modal show={modelState === "view-model"} onHide={handleClose}>
+
+          <Modal.Body>
+            <h4 className=' text-success'> Recipe Details </h4>
+            <div className='text-center'>
+              {recipeDetails?.imagePath ?
+                <img
+                  className=' img-fluid'
+                  src={`https://upskilling-egypt.com/` + recipeDetails?.imagePath} alt="" /> :
+                <img className='img-fluid' src={noData} />
+              }
+              <p>Description:{recipeDetails?.description}</p>
+              <p>Category:{recipeDetails?.category?.[0]?.name}</p>
+              {/* <p>Category:{(recipeDetails || {}).category[0] || 'N/A'}</p> */}
+              <p>Tag:{recipeDetails?.tag?.name}</p>
+
+              <button
+                onClick={addToFavorit}
+                className='btn btn-outline-success '>Add to favorit</button>
             </div>
 
-            <div className="form-group my-2 ">
-              <select className="form-select"
-                //  onChange={handleSelect} 
-                //  id="tags"
-                {...register('tagId', {
-                  required: true,
-                  valueAsNumber: true,
-                }
-                )}>
+          </Modal.Body>
 
-                <option >Select a Tag Id</option>
-                {tagsList.map((tag) => (
-                  <option key={tag.id} value={tag.id}>{tag.name}</option>
-                ))}
-
-              </select>
-              {errors.tagId && errors.tagId.type === "required" &&
-                (<span className='text-danger my-2 '>Please Selsct an option</span>)}
-            </div>
-
-            <div className="form-group my-4">
-              <select className="form-select"
-                id="catgories"
-                {...register('categoriesIds',
-                  {
-                    valueAsNumber: true,
-                  }
-                )}>
-                <option >Select a Cargory </option>
-                {categoriesList?.map((category) => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}</option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group my-3 ">
-              <input className="form-control"
-                type="file"
-                placeholder='choose file'
-                accept='image/*'
-                {...register("recipeImage",
-
-                )} />
-              <img className='w-100'
-                src={`https://upskilling-egypt.com:443/` +
-                  recipe?.imagePath} alt="" />
-
-              {/* {errors.recipeImage && <span>{errors.recipeImage.message}</span>} */}
-            </div>
-            <div className='form-group my-3 ' >
-              <textarea type="text" className="form-control" placeholder="Leave a comment here " rows={4}
-                {...register("description",
-                  {
-                    required: "Description is required"
-                  })}
-
-              ></textarea>
-              {errors.description &&
-                (<span className='text-danger my-3'>{errors.description.message}</span>)}
-            </div>
-            {/* -------------------------------------- */}
-
-
-
-            {/* 
-    <div className='form-group my-3 '>
-      <select id="tag" value={selectedTag} onChange={handleTagChange}>
-        <option value="">Select a Tag</option>
-        {tags.map(tag => (
-          <option key={recipe.tag.id} value={recipe.tag.name}>{recipe.tag.name}</option>
-        ))}
-      </select>
-    </div>
-*/}
-
-            {/* -------------------------------------------- */}
-
-            <div className="form-group">
-              <button className='btn btn-success w-100'>Update Recipes</button>
-            </div>
-          </form>
-
-
-        </Modal.Body>
-
-      </Modal>
-
-
+        </Modal>
+      }
       <div className='row mx-4 p-3'>
         <div className='col-md-6'>
           <div>
@@ -599,12 +536,12 @@ export default function RecipesList() {
             <span className=' text-muted'>You can check all details</span>
           </div>
         </div>
-
-        <div className='col-md-6 '>
-          <div className='text-end'>
-            <button onClick={showAddModel} className=' btn btn-success'>Add New Recipe</button>
-          </div>
-        </div>
+        {userRole === 'SuperAdmin' ?
+          <div className='col-md-6 '>
+            <div className='text-end'>
+              <button onClick={showAddModel} className=' btn btn-success'>Add New Recipe</button>
+            </div>
+          </div> : null}
 
         <div>
           <div className="row my-2 ">
@@ -643,7 +580,7 @@ export default function RecipesList() {
 
           {recipesList.length > 0 ?
             <div>
-              <table className="table table-striped rounded-3">
+              <table className="table custom-table table-striped rounded-3">
                 <thead className=' table-success'>
                   <tr>
                     <th scope="col">#</th>
@@ -671,13 +608,13 @@ export default function RecipesList() {
                               `https://upskilling-egypt.com:443/` +
                               recipe.imagePath} alt="" /> */}
                           {recipe.imagePath ?
-                           <img
-                          className=' img-fluid'
-                          src={
-                            `https://upskilling-egypt.com:443/` +
-                            recipe.imagePath} alt="" /> : (
-                          <img className='img-fluid'src={noData} />
-                        )}
+                            <img
+                              className=' img-fluid'
+                              src={
+                                `https://upskilling-egypt.com:443/` +
+                                recipe.imagePath} alt="" /> : (
+                              <img className='img-fluid' src={noData} />
+                            )}
                         </div>
                       </td>
                       <td >{recipe.description}</td>
@@ -688,12 +625,16 @@ export default function RecipesList() {
                         {recipe.tag.name}
 
                       </td>
-                      <td >
-                        <i onClick={() => showUpdateModel(recipe)}
-                          className="fa-solid fa-pen-to-square mx-2 text-warning"></i>
-                        <i onClick={() => showDeletModel(recipe.id)}
-                          className="fa-solid fa-trash text-danger"></i>
-                      </td>
+                      {userRole === 'SuperAdmin' ?
+                        <td >
+                          <i onClick={() => showUpdateModel(recipe)}
+                            className="fa-solid fa-pen-to-square mx-2 text-warning"></i>
+                          <i onClick={() => showDeletModel(recipe.id)}
+                            className="fa-solid fa-trash text-danger"></i>
+                        </td> : <td >
+                          <i onClick={() => showViewModel(recipe.id)}
+                            className="fa-solid fa-eye text-success"></i>
+                        </td>}
                     </tr>
 
                   ))}
@@ -701,7 +642,7 @@ export default function RecipesList() {
               </table>
 
 
-              <nav aria-label="...">
+              {/* <nav aria-label="...">
                 <ul className="pagination justify-content-center pagination-sm">
                   {pagesArray.map((pageNo) => (
                     <li key={pageNo} onClick={() => getAllRecipes(pageNo, searchString)} className="page-item">
@@ -714,12 +655,20 @@ export default function RecipesList() {
 
                 </ul>
 
-              </nav>
+              </nav> */}
+              <CustomPagination totalPages={pagesArray.length} currentPage={currentPage} onPageChange={setCurrentPage} />
 
             </div>
             :
+            // <NoData />
+            <div  className=' sweet-loading d-flex justify-content-center align-items-center p-5 m-3'>
+            <ClimbingBoxLoader
+              size={30}
+              color="#009247"
+              loading={loading}
 
-            <NoData />
+            />
+          </div>
           }
 
         </div>

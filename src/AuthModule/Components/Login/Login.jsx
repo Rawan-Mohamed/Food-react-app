@@ -1,34 +1,39 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import logo from '../../../assets/images/1.png'
 import { useForm } from "react-hook-form"
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthContext } from '../../../Context/AuthContext';
+import { ToastContext } from '../../../Context/ToastContext';
 
-export default function Login({ saveAdminData }) {
+export default function Login({ saveUserData }) {
   const navigate = useNavigate();
-  // some {properties} and receive return from hook useForm 
+  const { baseUrl } = useContext(AuthContext);
+  const { getToastValue } = useContext(ToastContext)
+  // some {properties} and receive return from hook useForm
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  // bdal mn handlha gwa el handleSubmit h3ml function a st2bl feha 
+  // bdal mn handlha gwa el handleSubmit h3ml function a st2bl feha
   const onSubmit = (data) => {
     console.log(data);
     axios
-      .post("https://upskilling-egypt.com:443/api/v1/Users/Login", data)
+      .post(`${baseUrl}/Users/Login`, data)
       .then((response) => {
-        console.log(response);
-
-        localStorage.setItem("adminToken", response.data.token); //m3ia el 7aga el tsbt any logged in 
-        saveAdminData();
+        // console.log(response);
+        getToastValue('success',"login successfully")
+        localStorage.setItem("userToken", response.data.token); //m3ia el 7aga el tsbt any logged in
+        saveUserData();
         navigate("/dashboard")
       })
       .catch((error) => {
-        toast(error.response.data.message);
+        // getToastValue('error',"invaild mail")
+        getToastValue("error", error.response.data.message)
         // console.log(error.response.data.message);
       });
   };
@@ -88,11 +93,13 @@ export default function Login({ saveAdminData }) {
                   <span className='text-danger'>{errors.password.message}</span>)}
               </div>
 
-              <div >
+              <div className='d-flex justify-content-between'>
                 {/* Register password */}
-                {/* <div className='register col-md-6'>
-                  <a href="#" className="text-black">Register now</a>
-                </div> */}
+                <div className='register'>
+                <Link to="/registeration" className=' text-success'>
+                    Register now?
+                  </Link>
+                </div>
                 {/* Forget password */}
                 <div className='form-group forgetpass text-end '>
                   <Link to="/reset-pass-request" className=' text-success'>
