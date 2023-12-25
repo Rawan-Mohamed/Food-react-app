@@ -191,3 +191,7 @@ form .input-icons i:after{
       transform: translateY(-10px); /* Adjust the value for the desired movement */
     }
   }
+
+  .profile-w{
+    width: 95%;
+  }

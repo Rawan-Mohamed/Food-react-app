@@ -19,6 +19,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AuthContext } from './Context/AuthContext';
 import Registeration from './AuthModule/Components/Registeration/Registeration';
 import FavoritesList from './RecipesModule/Components/RecipesList/FavoritesList';
+import UserProfile from './AuthModule/Components/UserProfile/UserProfile';
 
 
 
@@ -59,6 +60,7 @@ function App() {
         { path: "recipes", element: <RecipesList /> },
         { path: "categories", element: <CategoriesList /> },
         { path: "favourites", element: <FavoritesList /> },
+        { path: "profile", element: <UserProfile/> },
       ]
     },
     {
@@ -75,6 +77,7 @@ function App() {
         { path: "reset-pass", element: <ResetPass /> },
         { path: "reset-pass-request", element: <ResetPassRequest /> },
         { path: "registeration", element: <Registeration/> },
+
 
 
 

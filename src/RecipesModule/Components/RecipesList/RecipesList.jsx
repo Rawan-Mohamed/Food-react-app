@@ -11,6 +11,7 @@ import { AuthContext } from '../../../Context/AuthContext';
 import { ToastContext } from '../../../Context/ToastContext';
 import CustomPagination from '../../../SharedModule/Components/CustomPagination/CustomPagination';
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
+import { LineWave } from 'react-loader-spinner'
 
 
 
@@ -308,8 +309,7 @@ export default function RecipesList() {
 
                 <div className="form-group my-2 ">
                   <select className="form-select"
-                    //  onChange={handleSelect}
-                    //  id="tags"
+
                     {...register('tagId', {
                       required: true,
                       valueAsNumber: true,
@@ -350,7 +350,6 @@ export default function RecipesList() {
 
                     )} />
 
-                  {/* {errors.recipeImage && <span>{errors.recipeImage.message}</span>} */}
                 </div>
                 <div className='form-group my-3 '>
                   <textarea type="text" className="form-control" placeholder="Leave a comment here " rows={4}
@@ -413,7 +412,6 @@ export default function RecipesList() {
                     && (<span className='text-danger my-3'>Filed is required</span>)}
                 </div>
 
-
                 <div className='form-group my-3 ' >
                   <input type="number" className="form-control "
                     placeholder='Price '
@@ -434,8 +432,6 @@ export default function RecipesList() {
 
                 <div className="form-group my-2 ">
                   <select className="form-select"
-                    //  onChange={handleSelect}
-                    //  id="tags"
                     {...register('tagId', {
                       required: true,
                       valueAsNumber: true,
@@ -479,7 +475,6 @@ export default function RecipesList() {
                     src={`https://upskilling-egypt.com:443/` +
                       recipe?.imagePath} alt="" />
 
-                  {/* {errors.recipeImage && <span>{errors.recipeImage.message}</span>} */}
                 </div>
                 <div className='form-group my-3 ' >
                   <textarea type="text" className="form-control" placeholder="Leave a comment here " rows={4}
@@ -517,7 +512,6 @@ export default function RecipesList() {
               }
               <p>Description:{recipeDetails?.description}</p>
               <p>Category:{recipeDetails?.category?.[0]?.name}</p>
-              {/* <p>Category:{(recipeDetails || {}).category[0] || 'N/A'}</p> */}
               <p>Tag:{recipeDetails?.tag?.name}</p>
 
               <button
@@ -641,34 +635,23 @@ export default function RecipesList() {
                 </tbody>
               </table>
 
-
-              {/* <nav aria-label="...">
-                <ul className="pagination justify-content-center pagination-sm">
-                  {pagesArray.map((pageNo) => (
-                    <li key={pageNo} onClick={() => getAllRecipes(pageNo, searchString)} className="page-item">
-                      <a className="page-link">
-                        {pageNo}
-                      </a>
-                    </li>
-                  ))}
-
-
-                </ul>
-
-              </nav> */}
               <CustomPagination totalPages={pagesArray.length} currentPage={currentPage} onPageChange={setCurrentPage} />
 
             </div>
             :
-            // <NoData />
-            <div  className=' sweet-loading d-flex justify-content-center align-items-center p-5 m-3'>
-            <ClimbingBoxLoader
-              size={30}
-              color="#009247"
-              loading={loading}
-
-            />
-          </div>
+            <div className=' sweet-loading d-flex justify-content-center align-items-center p-5 m-3'>
+              {loading ?
+                <LineWave
+                  visible={true}
+                  height="200"
+                  width="200"
+                  color="#4fa94d"
+                  ariaLabel="rotating-square-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                />
+                : <NoData />}
+            </div>
           }
 
         </div>

@@ -11,7 +11,7 @@ import { ToastContext } from './../../../Context/ToastContext';
 import { AuthContext } from '../../../Context/AuthContext';
 import CustomPagination from '../../../SharedModule/Components/CustomPagination/CustomPagination';
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
-
+import { LineWave } from 'react-loader-spinner'
 
 export default function CategoriesList() {
   const [categoriesList, setCategoriesList] = useState([]);
@@ -138,7 +138,7 @@ export default function CategoriesList() {
   }, [currentPage])
 
   const getNameVAlue = (input) => {
-    setSearchString( input.target.value)
+    setSearchString(input.target.value)
     getCategoriesList(1, input.target.value);
   }
 
@@ -239,9 +239,9 @@ export default function CategoriesList() {
         </div>
 
         <div>
-          <div  className='icon-input position-relative'>
-          <i className="icons fa-solid fa-search position-absolute text-success" />
-          <input onChange={getNameVAlue} placeholder='search by category name....' className='form-control my-2' type="text" />
+          <div className='icon-input position-relative'>
+            <i className="icons fa-solid fa-search position-absolute text-success" />
+            <input onChange={getNameVAlue} placeholder='search by category name....' className='form-control my-2' type="text" />
 
           </div>
 
@@ -287,19 +287,32 @@ export default function CategoriesList() {
                 </ul>
 
               </nav> */}
-              <CustomPagination totalPages={pagesArray.length} currentPage={currentPage} onPageChange={setCurrentPage}/>
+              <CustomPagination totalPages={pagesArray.length} currentPage={currentPage} onPageChange={setCurrentPage} />
 
             </div>
             :
             // <NoData />
-            <div  className=' sweet-loading d-flex justify-content-center align-items-center p-5 m-3'>
-            <ClimbingBoxLoader
-              size={30}
-              color="#009247"
-              loading={loading}
+            <div className=' sweet-loading d-flex justify-content-center align-items-center p-5 m-3'>
+              {loading ?
 
-            />
-          </div>
+                // <ClimbingBoxLoader
+                //   size={30}
+                //   color="#009247"
+                //   loading={loading}
+
+                // />
+                <LineWave
+                  visible={true}
+                  height="200"
+                  width="200"
+                  color="#4fa94d"
+                  ariaLabel="rotating-square-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                />
+                :
+                <NoData />}
+            </div>
           }
 
         </div>

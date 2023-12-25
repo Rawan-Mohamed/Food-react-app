@@ -28,9 +28,12 @@ export default function AuthContextProvider(props) {
       saveUserData();
     }
   }, []);
+   // Update user data in the context
+  const updateUserData = (newUserData) => {
+    setUserData(newUserData);
+};
 
-
-  return <AuthContext.Provider value={{ userData, saveUserData, requestHeaders,baseUrl,userRole }}>
+  return <AuthContext.Provider value={{ userData, saveUserData, requestHeaders,baseUrl,userRole,updateUserData }}>
     {props.children}
   </AuthContext.Provider>
 }

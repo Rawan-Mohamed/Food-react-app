@@ -245,8 +245,8 @@ export default function Registeration() {
                                 {/* ------------------------ social media */}
                                 <div>
                                     {!profile ? (
-                                            <div className='row'>
-                                                <p className='title text-center line'>or Login with</p>
+                                        <div className='row'>
+                                            <p className='title text-center line'>or Login with</p>
                                             <LoginSocialFacebook
                                                 className='col-md-6'
                                                 isOnlyGetToken

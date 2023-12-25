@@ -7,6 +7,8 @@ import noData from "../../../assets/images/no-data.png"
 import { ToastContainer, toast } from 'react-toastify';
 import { ToastContext } from '../../../Context/ToastContext';
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
+import NoData from '../../../SharedModule/Components/NoData/NoData'
+import { LineWave } from 'react-loader-spinner'
 
 export default function FavoritesList() {
   const [favList, setFavList] = useState([])
@@ -165,10 +167,64 @@ export default function FavoritesList() {
 
         {loading ? (
           <div className='sweet-loading d-flex justify-content-center align-items-center p-5 m-3'>
-            <ClimbingBoxLoader size={30} color='#009247' loading={loading} />
+            <LineWave
+              visible={true}
+              height="200"
+              width="200"
+              color="#4fa94d"
+              ariaLabel="rotating-square-loading"
+              wrapperStyle={{}}
+              wrapperClass=""
+            />
           </div>
         ) : (
           <>
+            {favList.length > 0 ? (
+              <div className='row'>
+                {favList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((fav) => (
+                  <div key={fav.id} className='col-sm-6 col-md-4 p-2'>
+                    <div className='custom-card card h-100'>
+                      <div className='img-container card-img-equal-ratio' style={{ height: '200px', overflow: 'hidden' }}>
+                        {fav?.recipe.imagePath ? (
+                          <img
+                            className=' img-fluid h-100 w-100'
+                            src={`https://upskilling-egypt.com/` + fav?.recipe.imagePath}
+                            alt=''
+                            style={{ objectFit: 'cover' }}
+                          />
+                        ) : (
+                          <img className='img-fluid w-100' src={noData} />
+                        )}
+                      </div>
+
+
+
+                      <div className='card-body'>
+                        <h5 class='card-title '>
+                          <span className=' text-black'>Name: </span>
+                          {fav.recipe.name}</h5>
+                        <h6 class='card-subtitle  p-1 '>
+                          <span className=' text-black'>ID: </span>
+                          {fav.id}</h6>
+                        <h6 class='card-text p-1'>
+                          <span className=' text-black'>Description: </span>
+                          {fav.recipe.description}</h6>
+                        <h6 class='card-text'>
+                          <span className=' text-black'> Price: </span>
+                          {fav.recipe.price}</h6>
+                        <div className='position-absolute top-0 end-0 m-1'>
+                          <i onClick={() => showDeletModel(fav.id)} className='fa-solid fa-heart text-danger'></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+              </div>
+            ) : (
+              <NoData />
+            )}
+            {/* {favList.length>0}
             {favList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((fav) => (
               <div key={fav.id} className='col-sm-6 col-md-4 p-2'>
                 <div className='custom-card card h-100'>
@@ -206,13 +262,13 @@ export default function FavoritesList() {
                   </div>
                 </div>
               </div>
-            ))}
+            ))} */}
 
 
           </>
         )}
-
-        <div className='row mt-3'>
+        {/* pagination  */}
+        {/* <div className='row mt-3'>
           <div className='col-md-12 text-center'>
             <button onClick={prevPage} disabled={currentPage === 1} className='btn btn-outline-success mx-2'>
               Previous
@@ -222,7 +278,7 @@ export default function FavoritesList() {
               Next
             </button>
           </div>
-        </div>
+        </div> */}
       </div>
 
     </>

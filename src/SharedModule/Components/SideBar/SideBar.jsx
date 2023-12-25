@@ -38,8 +38,9 @@ export default function SideBar() {
 
           <Sidebar collapsed={isCollapsed}>
             <Menu>
-              <div className='img-logo  '>
-                <MenuItem onClick={handleToggle} icon={<img src={logo}
+              <div className='img-logo '>
+                <MenuItem onClick={handleToggle}
+                icon={<img src={logo}
                 // className='sidebar-logo flex-shrink-0 '
                 ></img>} ></MenuItem>
               </div>

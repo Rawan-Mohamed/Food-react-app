@@ -11,6 +11,7 @@ import { AuthContext } from '../../../Context/AuthContext';
 import { ToastContext } from '../../../Context/ToastContext';
 import CustomPagination from './../../../SharedModule/Components/CustomPagination/CustomPagination';
 import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
+import { LineWave } from 'react-loader-spinner'
 
 
 export default function UserList() {
@@ -176,8 +177,8 @@ export default function UserList() {
                     <th scope="col">Phone Number</th>
                     <th scope="col">Email</th>
 
-                    {selectedRole !== '1' &&
-                      <th scope="col">Action</th>}
+
+                      <th scope="col">Action</th>
 
 
                   </tr>
@@ -208,12 +209,12 @@ export default function UserList() {
                       <td >{user.email}</td>
 
 
-                      {selectedRole !== '1' && (
+
                         <td className='text-center'>
 
                           <i onClick={() => showDeletModel(user.id)}
                             className="fa-solid fa-trash text-danger"></i>
-                        </td>)}
+                        </td>
 
                     </tr>
 
@@ -225,12 +226,18 @@ export default function UserList() {
             </div>
             :// <NoData />
             <div  className=' sweet-loading d-flex justify-content-center align-items-center p-5 m-3'>
-              <ClimbingBoxLoader
-                size={30}
-                color="#009247"
-                loading={loading}
-
-              />
+              {loading ?
+             <LineWave
+                  visible={true}
+                  height="200"
+                  width="200"
+                  color="#4fa94d"
+                  ariaLabel="rotating-square-loading"
+                  wrapperStyle={{}}
+                  wrapperClass=""
+                />
+              :
+              <NoData/>}
             </div>
           }
 
