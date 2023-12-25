@@ -224,45 +224,7 @@ export default function FavoritesList() {
             ) : (
               <NoData />
             )}
-            {/* {favList.length>0}
-            {favList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((fav) => (
-              <div key={fav.id} className='col-sm-6 col-md-4 p-2'>
-                <div className='custom-card card h-100'>
-                  <div className='img-container card-img-equal-ratio' style={{ height: '200px', overflow: 'hidden' }}>
-                    {fav?.recipe.imagePath ? (
-                      <img
-                        className=' img-fluid h-100 w-100'
-                        src={`https://upskilling-egypt.com/` + fav?.recipe.imagePath}
-                        alt=''
-                        style={{ objectFit: 'cover' }}
-                      />
-                    ) : (
-                      <img className='img-fluid w-100' src={noData} />
-                    )}
-                  </div>
 
-
-
-                  <div className='card-body'>
-                    <h5 class='card-title '>
-                      <span className=' text-black'>Name: </span>
-                      {fav.recipe.name}</h5>
-                    <h6 class='card-subtitle  p-1 '>
-                      <span className=' text-black'>ID: </span>
-                      {fav.id}</h6>
-                    <h6 class='card-text p-1'>
-                      <span className=' text-black'>Description: </span>
-                      {fav.recipe.description}</h6>
-                    <h6 class='card-text'>
-                      <span className=' text-black'> Price: </span>
-                      {fav.recipe.price}</h6>
-                    <div className='position-absolute top-0 end-0 m-1'>
-                      <i onClick={() => showDeletModel(fav.id)} className='fa-solid fa-heart text-danger'></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))} */}
 
 
           </>

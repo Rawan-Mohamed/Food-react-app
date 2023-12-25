@@ -13,25 +13,10 @@ import VerfcationCode from '../VerfcationCode/VerfcationCode';
 import { LoginSocialGoogle, LoginSocialFacebook } from 'reactjs-social-login';
 import { FacebookLoginButton, GoogleLoginButton } from 'react-social-login-buttons'
 
-// import { auth } from '../firebase';
 export default function Registeration() {
     const REDIRECT_URI = 'http:localhost';
     const [provider, setProvider] = useState('')
     const [profile, setProfile] = useState(null)
-
-    // const onLoginStart = useCallback(() => {
-    //     alert('login start')
-    // }, [])
-
-    // const onLogoutSuccess = useCallback(() => {
-    //     setProfile(null)
-    //     setProvider('')
-    //     alert('logout success')
-    // }, [])
-
-
-
-    // const navigate = useNavigate();
     const {
         register,
         handleSubmit,
@@ -54,9 +39,7 @@ export default function Registeration() {
             .then((response) => {
                 console.log(response);
                 getToastValue("success", "register done Successfuly")
-                // localStorage.setItem("userToken", response.data.token); //m3ia el 7aga el tsbt any logged in
-                // saveUserData();
-                // navigate("/dashboard")
+
             })
             .catch((error) => {
                 getToastValue("error", error.response.data.message)
@@ -126,8 +109,7 @@ export default function Registeration() {
                                             />
                                             {errors.email && (
                                                 <span className='text-danger'>{errors.email.message}</span>)}
-                                            {/* {errors.email && errors.email.type === "pattern" && (
-                <span className='text-danger'>invaild mail</span>)} */}
+
                                         </div>
                                     </div>
                                 </div>
@@ -148,8 +130,7 @@ export default function Registeration() {
                                             />
                                             {errors.country && (
                                                 <span className='text-danger'>{errors.country.message}</span>)}
-                                            {/* {errors.email && errors.email.type === "pattern" && (
-                <span className='text-danger'>invaild mail</span>)} */}
+
                                         </div>
                                     </div>
                                     <div className="col-md-6">
@@ -169,8 +150,7 @@ export default function Registeration() {
                                             />
                                             {errors.phoneNumber && (
                                                 <span className='text-danger'>{errors.phoneNumber.message}</span>)}
-                                            {/* {errors.email && errors.email.type === "pattern" && (
-                <span className='text-danger'>invaild mail</span>)} */}
+
                                         </div>
                                     </div>
                                 </div>
@@ -190,8 +170,7 @@ export default function Registeration() {
                                                         value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                                                         message: "Invaild password",
                                                     }
-                                                    // required: true,
-                                                    // pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+
                                                 })}
                                             />
 
@@ -242,7 +221,7 @@ export default function Registeration() {
 
 
 
-                                {/* ------------------------ social media */}
+                                {/* ---------------social media-------------------- */}
                                 <div>
                                     {!profile ? (
                                         <div className='row'>

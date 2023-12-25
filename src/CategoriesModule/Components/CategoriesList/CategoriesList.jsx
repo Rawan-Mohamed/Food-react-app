@@ -10,7 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContext } from './../../../Context/ToastContext';
 import { AuthContext } from '../../../Context/AuthContext';
 import CustomPagination from '../../../SharedModule/Components/CustomPagination/CustomPagination';
-import ClimbingBoxLoader from "react-spinners/ClimbingBoxLoader";
 import { LineWave } from 'react-loader-spinner'
 
 export default function CategoriesList() {
@@ -273,20 +272,6 @@ export default function CategoriesList() {
                 </tbody>
               </table>
 
-              {/* <nav aria-label="...">
-                <ul className="pagination justify-content-center pagination-sm">
-                  {pagesArray.map((pageNo) => (
-                    <li key={pageNo} onClick={() => getCategoriesList(pageNo,searchString)} className="page-item">
-                      <a className="page-link">
-                        {pageNo}
-                      </a>
-                    </li>
-                  ))}
-
-
-                </ul>
-
-              </nav> */}
               <CustomPagination totalPages={pagesArray.length} currentPage={currentPage} onPageChange={setCurrentPage} />
 
             </div>
@@ -294,13 +279,6 @@ export default function CategoriesList() {
             // <NoData />
             <div className=' sweet-loading d-flex justify-content-center align-items-center p-5 m-3'>
               {loading ?
-
-                // <ClimbingBoxLoader
-                //   size={30}
-                //   color="#009247"
-                //   loading={loading}
-
-                // />
                 <LineWave
                   visible={true}
                   height="200"

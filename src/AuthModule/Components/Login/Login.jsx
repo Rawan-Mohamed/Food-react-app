@@ -26,7 +26,7 @@ export default function Login({ saveUserData }) {
       .post(`${baseUrl}/Users/Login`, data)
       .then((response) => {
         // console.log(response);
-        getToastValue('success',"login successfully")
+        getToastValue('success', "login successfully")
         localStorage.setItem("userToken", response.data.token); //m3ia el 7aga el tsbt any logged in
         saveUserData();
         navigate("/dashboard")
@@ -56,7 +56,7 @@ export default function Login({ saveUserData }) {
               <p>Welcome Back! Please enter your details</p>
               {/* /Email/ */}
               <div className="form-group my-3 input-icons position-relative">
-                <i className="icons fa-solid fa-envelope position-absolute text-success  "/>
+                <i className="icons fa-solid fa-envelope position-absolute text-success  " />
 
                 <input
                   placeholder='Enter your E-mail'
@@ -72,13 +72,12 @@ export default function Login({ saveUserData }) {
                 />
                 {errors.email && (
                   <span className='text-danger'>{errors.email.message}</span>)}
-                {/* {errors.email && errors.email.type === "pattern" && (
-                  <span className='text-danger'>invaild mail</span>)} */}
+
               </div>
               {/* //Password */}
               <div className="form-group my-3 input-icons position-relative">
                 <i className="icons fa-solid fa-lock position-absolute text-success " />
-{/* <i className="fa-solid fa-eye" /> */}
+                {/* <i className="fa-solid fa-eye" /> */}
                 <input
                   placeholder='Password'
                   className='form-control'
@@ -96,7 +95,7 @@ export default function Login({ saveUserData }) {
               <div className='d-flex justify-content-between'>
                 {/* Register password */}
                 <div className='register'>
-                <Link to="/registeration" className=' text-success'>
+                  <Link to="/registeration" className=' text-success'>
                     Register now?
                   </Link>
                 </div>

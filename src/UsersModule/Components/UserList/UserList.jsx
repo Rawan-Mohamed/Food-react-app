@@ -198,10 +198,6 @@ export default function UserList() {
                                 `https://upskilling-egypt.com:443/` +
                                 user.imagePath} alt="" /> :
                             <i className="fas fa-user-circle text-success " />
-
-                            //     (
-                            //   <img className='img-fluid' src={noData} />
-                            // )
                           }
                         </div>
                       </td>
