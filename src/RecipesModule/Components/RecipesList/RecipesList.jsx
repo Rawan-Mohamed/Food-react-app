@@ -125,18 +125,17 @@ export default function RecipesList() {
     axios.delete(`${baseUrl}/Recipe/${itemId}`, {
       headers: requestHeaders,
     })
-
-      .then((response) => {
-        getToastValue("sucess", "Recipe deleted successfully")
-        handleClose();
-        getAllRecipes(response.data.data);
-
-      })
-      .catch((error) => {
-        getToastValue(error.response.data.message)
-      })
-  }
-
+    .then((response) => {
+      getToastValue("success", "Recipe deleted successfully");
+      return getAllRecipes(); // Return the promise
+    })
+    .then(() => {
+      handleClose(); // Close the modal after updating
+    })
+    .catch((error) => {
+      getToastValue(error.response.data.message);
+    });
+  };
   //Update Recipe API
   // const updateRecipe = (data) => {
   //   const updateFormData = appendToFormData(data);
