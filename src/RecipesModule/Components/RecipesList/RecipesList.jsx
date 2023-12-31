@@ -39,6 +39,7 @@ export default function RecipesList() {
   const [recipeDetails, setRecipeDetails] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true); // Add this line
+  const [forceUpdate, setForceUpdate] = useState(false);
 
   const showAddModel = () => {
 
@@ -111,8 +112,8 @@ export default function RecipesList() {
     })
       .then((response) => {
         setPagesArray(Array(response.data.totalNumberOfPages).fill().map((_, i) => i + 1));
-        setRecipesList(response?.data?.data);
-
+        setRecipesList([...response?.data?.data]);
+        // setRecipesList(response?.data?.data);
       })
       .catch((error) => {
         console.log(error);
@@ -137,23 +138,47 @@ export default function RecipesList() {
   }
 
   //Update Recipe API
+  // const updateRecipe = (data) => {
+  //   const updateFormData = appendToFormData(data);
+  //   axios
+  //     .put(`${baseUrl}/Recipe/${itemId}`, updateFormData, {
+  //       headers: requestHeaders,
+  //     })
+
+  //     .then((response) => {
+  //       getToastValue("sucess", "Updated successfully")
+  //       getAllRecipes();
+  //       handleClose();
+  //       setForceUpdate(!forceUpdate); // Force re-render
+
+  //     })
+  //     .catch((error) => {
+  //       getToastValue(error?.response?.data?.message)
+  //     })
+  // }
   const updateRecipe = (data) => {
     const updateFormData = appendToFormData(data);
+    if (!Array.isArray(data.recipeImage) || !data.recipeImage.length) {
+      // If no new image is selected and existing image path is available, include it
+      if (recipe?.imagePath) {
+        updateFormData.append("recipeImage", recipe?.imagePath);
+      }
+    }
     axios
       .put(`${baseUrl}/Recipe/${itemId}`, updateFormData, {
         headers: requestHeaders,
       })
-
       .then((response) => {
-        getToastValue("sucess", "Updated successfully")
-        getAllRecipes();
-        handleClose();
+        getToastValue("success", "Updated successfully");
+        return getAllRecipes(); // Return the promise
+      })
+      .then(() => {
+        handleClose(); // Close the modal after updating
       })
       .catch((error) => {
-        getToastValue(error.response.data.message)
-      })
-  }
-
+        getToastValue(error?.response?.data?.message);
+      });
+  };
   const showUpdateModel = (item) => {
     // setRecipe(item);
     setModelState("update-model")
@@ -251,11 +276,11 @@ export default function RecipesList() {
   }
 
   useEffect(() => {
-    getAllRecipes(currentPage);
+    getAllRecipes(currentPage, searchString, selectedTagId, selectedCateId);
     getCategoryList();
     getAllTags();
 
-  }, [currentPage]);
+  }, [currentPage, searchString, selectedTagId, selectedCateId]);
 
 
 
