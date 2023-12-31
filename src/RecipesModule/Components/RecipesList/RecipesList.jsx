@@ -83,11 +83,12 @@ export default function RecipesList() {
       })
       .then((response) => {
         getToastValue("sucess", "Added successfully")
-
-        handleClose();
         getAllRecipes();
 
 
+      })
+      .then(() => {
+        handleClose(); // Close the modal after updating
       })
       .catch((error) => {
         getToastValue(error.response.data.message)
