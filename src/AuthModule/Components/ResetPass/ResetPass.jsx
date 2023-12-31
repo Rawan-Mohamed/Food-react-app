@@ -23,7 +23,6 @@ export default function ResetPass() {
 
 
   const onSubmit = (data) => {
-    // console.log(data);
     axios
       .post(`${baseUrl}/Users/Reset`, data)
       .then((response) => {
@@ -36,7 +35,6 @@ export default function ResetPass() {
       .catch((error) => {
         getToastValue("error", error.response.data.message)
 
-        // console.log(error.response.data.message);
 
       });
   };

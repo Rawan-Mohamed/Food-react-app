@@ -22,7 +22,6 @@ export default function ResetPassRequest() {
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = (data) => {
-    // console.log(data);
     setIsLoading(true);
     axios
       .post(`${baseUrl}/Users/Reset/Request`, data)
@@ -35,7 +34,6 @@ export default function ResetPassRequest() {
       })
       .catch((error) => {
         getToastValue(error.response.data.message)
-        // console.log(error.response.data.message);
 
       });
   };

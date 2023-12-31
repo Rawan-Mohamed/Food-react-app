@@ -35,7 +35,6 @@ export default function CategoriesList() {
 
   // Add Category API
   const onSubmit = (data) => {
-    // console.log(data)
     axios.post(`${baseUrl}/Category/`, data, {
       headers: requestHeaders
     })
@@ -46,7 +45,6 @@ export default function CategoriesList() {
 
       })
       .catch((error) => {
-        // console.log(error)
         getToastValue(error.response.data.message)
 
       })
@@ -127,7 +125,6 @@ export default function CategoriesList() {
         setPagesArray(Array(response.data.totalNumberOfPages).fill().map((_, i) => i + 1));
       })
       .catch((error) => {
-        console.log(error);
       })
 
   }

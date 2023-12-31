@@ -21,11 +21,11 @@ export default function Login({ saveUserData }) {
 
   // bdal mn handlha gwa el handleSubmit h3ml function a st2bl feha
   const onSubmit = (data) => {
-    console.log(data);
+
     axios
       .post(`${baseUrl}/Users/Login`, data)
       .then((response) => {
-        // console.log(response);
+      
         getToastValue('success', "login successfully")
         localStorage.setItem("userToken", response.data.token); //m3ia el 7aga el tsbt any logged in
         saveUserData();
@@ -34,7 +34,6 @@ export default function Login({ saveUserData }) {
       .catch((error) => {
         // getToastValue('error',"invaild mail")
         getToastValue("error", error.response.data.message)
-        // console.log(error.response.data.message);
       });
   };
 

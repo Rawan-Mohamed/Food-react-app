@@ -15,12 +15,10 @@ export default function AuthContextProvider(props) {
     let decodedToken = jwtDecode(encodedToken);
     setUserData(decodedToken);
     setUserRole(decodedToken.userGroup)
-    console.log(decodedToken);
 
     // if (encodedToken) {
     //   let decodedToken = jwtDecode(encodedToken);
     //   setUserData(decodedToken);
-    //   console.log(setUserData)
     // }
   };
   useEffect(() => {

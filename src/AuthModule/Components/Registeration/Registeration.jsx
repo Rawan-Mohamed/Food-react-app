@@ -33,17 +33,16 @@ export default function Registeration() {
     const handleShow = () => setShow(true);
 
     const onSubmit = (data) => {
-        console.log(data);
+
         axios
             .post(`${baseUrl}/Users/Register`, data)
             .then((response) => {
-                console.log(response);
+
                 getToastValue("success", "register done Successfuly")
 
             })
             .catch((error) => {
                 getToastValue("error", error.response.data.message)
-                // console.log(error.response.data.message);
             });
     };
 
@@ -231,11 +230,9 @@ export default function Registeration() {
                                                 isOnlyGetToken
                                                 appId={197550470089607 || ''}
                                                 onResolve={(response) => {
-                                                    console.log(response);
                                                     setProfile(response.data)
                                                 }}
                                                 onReject={(error) => {
-                                                    console.log(error)
                                                 }}
                                             >
                                                 <FacebookLoginButton className='facbook-button' />
@@ -253,7 +250,6 @@ export default function Registeration() {
                                                     setProfile(response.data)
                                                 }}
                                                 onReject={(error) => {
-                                                    console.log(error)
                                                 }}
                                             >
                                                 <GoogleLoginButton />

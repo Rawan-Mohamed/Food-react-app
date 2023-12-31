@@ -35,8 +35,8 @@ function App() {
   //   if (encodedToken) {
   //     let decodedToken = jwtDecode(encodedToken);
   //     setAdminData(decodedToken);
-  //     console.log(setAdminData)
-  //   console.log(decodedToken);
+  //     (setAdminData)
+  // 
   //   }
   // }
   // useEffect(() => {

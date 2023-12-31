@@ -75,28 +75,27 @@ export default function RecipesList() {
 
   // Add recipe API
   const onSubmit = (data) => {
-    console.log(data);
+
     const addFormData = appendToFormData(data);
-    axios.post(`${baseUrl}/Recipe/`, addFormData
-      , {
+
+    axios.post(`${baseUrl}/Recipe/`, addFormData, {
         headers: requestHeaders
       })
       .then((response) => {
-        getToastValue("sucess", "Added successfully")
-        getAllRecipes();
-
-
-      })
-      .then(() => {
-        handleClose(); // Close the modal after updating
+        getToastValue("success", "Added successfully");
+        // Close the modal after successful post
+        handleClose();
+        // Fetch recipes after closing the modal
+        return getAllRecipes();
       })
       .catch((error) => {
-        getToastValue(error.response.data.message)
+        console.error('Error adding recipe:', error);
+        getToastValue("error", "Check the console for details");
       })
-
-    reset();
+      .finally(() => {
+        reset(); // Reset the form whether the request is successful or not
+      });
   };
-
   //Get Recipe API
   const getAllRecipes = (pageNo, name, tagId, categoryId) => {
     axios.get(`${baseUrl}/Recipe/`, {
@@ -117,7 +116,6 @@ export default function RecipesList() {
         // setRecipesList(response?.data?.data);
       })
       .catch((error) => {
-        console.log(error);
       })
   }
 
@@ -234,17 +232,14 @@ export default function RecipesList() {
       .then((response) => {
         // getToastValue("success","deleted Successfuly")
         // handleClose();
-        console.log(response.data);
         setRecipeDetails(response.data);
 
       })
       .catch((error) => {
-        console.log(error);
       })
   }
 
   const getNameVAlue = (input) => {
-    // console.log(target);
     setSearchString(input.target.value);
     getAllRecipes(1, input.target.value, selectedTagId, selectedCateId);
   }
@@ -269,10 +264,10 @@ export default function RecipesList() {
       .then(response => {
         getToastValue("success", "Added Successfuly")
         handleClose();
-        console.log(response)
       })
       .catch((error) =>
-        console.log(error));
+        getToastValue("error", "Something went wrong!"));
+        
   }
 
   useEffect(() => {

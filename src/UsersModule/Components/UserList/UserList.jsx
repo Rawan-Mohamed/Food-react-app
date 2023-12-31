@@ -84,7 +84,6 @@ export default function UserList() {
         // setCurrentPage(pageNo);
       })
       .catch((error) => {
-        console.log(error);
       })
       .finally(() => {
         setLoading(false); // Set loading to false when the request is complete
@@ -100,7 +99,6 @@ export default function UserList() {
   }, [currentPage]);
 
   const getNameVAlue = (input) => {
-    console.log(input);
     setSearchString(input.target.value);
     getAllUsers(1, input.target.value, selectedRole);
   }

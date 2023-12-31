@@ -24,7 +24,7 @@ export default function ChangePass({ handleClose }) {
 
   // bdal mn handlha gwa el handleSubmit h3ml function a st2bl feha
   const onSubmit = (data) => {
-    // console.log(data);
+
     axios
       .put(`${baseUrl}/Users/ChangePassword`, data, {
         headers: requestHeaders,
@@ -38,7 +38,6 @@ export default function ChangePass({ handleClose }) {
       .catch((error) => {
         getToastValue(error.response.data.message)
 
-        // console.log(error.response.data.message);
       });
   };
 

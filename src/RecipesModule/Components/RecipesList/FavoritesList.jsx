@@ -40,12 +40,13 @@ export default function FavoritesList() {
       },
     })
       .then((response) => {
-        console.log(response.data.data)
         setFavList(response.data.data)
         setLoading(false);
       })
       .catch((error) =>
-        console.log(error));
+      getToastValue(error.response.data.message)
+
+        )
     // setLoading(false);
   }
 
@@ -81,7 +82,6 @@ export default function FavoritesList() {
 
 
   const getNameVAlue = (input) => {
-    console.log(input);
     setSearchString(input.target.value);
     setCurrentPage(1);
     getallFavorites(1, input.target.value);
