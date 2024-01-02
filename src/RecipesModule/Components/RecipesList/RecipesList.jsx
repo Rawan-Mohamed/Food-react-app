@@ -267,7 +267,7 @@ export default function RecipesList() {
       })
       .catch((error) =>
         getToastValue("error", "Something went wrong!"));
-        
+
   }
 
   useEffect(() => {

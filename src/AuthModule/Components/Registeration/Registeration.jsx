@@ -1,6 +1,6 @@
-import React, { useCallback, useState } from 'react'
-import logo from '../../../assets/images/1.png'
-import { useForm } from "react-hook-form"
+import React, { useState } from 'react';
+import logo from '../../../assets/images/1.png';
+import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -8,69 +8,86 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useContext } from 'react';
 import { AuthContext } from '../../../Context/AuthContext';
 import { ToastContext } from '../../../Context/ToastContext';
-import Modal from 'react-bootstrap/Modal';
-import VerfcationCode from '../VerfcationCode/VerfcationCode';
 import { LoginSocialGoogle, LoginSocialFacebook } from 'reactjs-social-login';
 import { FacebookLoginButton, GoogleLoginButton } from 'react-social-login-buttons'
 
-export default function Registeration() {
+export default function Registration() {
+    // Context and state variables
+    const { getToastValue } = useContext(ToastContext);
+    const navigate = useNavigate();
+    const [currentStep, setCurrentStep] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
     const REDIRECT_URI = 'http:localhost';
     const [provider, setProvider] = useState('')
     const [profile, setProfile] = useState(null)
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-        getValues,
-    } = useForm();
-
-
-    const { baseUrl } = useContext(AuthContext);
-    const { getToastValue } = useContext(ToastContext)
-
+    const { requestHeaders, baseUrl } = useContext(AuthContext);
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    // React Hook Form setup
+    const {
+        register,
+        handleSubmit,
+        formState: { errors, isValid },
+        getValues,
+    } = useForm();
 
-    const onSubmit = (data) => {
+    // Function to handle submission for step 1 (Registration)
+    const onSubmitStep1 = (data) => {
+        setIsLoading(true);
 
-        axios
-            .post(`${baseUrl}/Users/Register`, data)
+        axios.post(`${baseUrl}/Users/Register`, data, {
+            headers: requestHeaders,
+        })
             .then((response) => {
-
-                getToastValue("success", "register done Successfuly")
-
+                getToastValue("success", "Register done successfully");
+                setCurrentStep(2);
+                setIsLoading(false);
             })
             .catch((error) => {
-                getToastValue("error", error.response.data.message)
+                getToastValue("error", error.response.data.message);
+                setIsLoading(false);
+            });
+    };
+
+    // Function to handle submission for step 2 (Verification)
+    const onSubmitStep2 = (data) => {
+        setIsLoading(true);
+
+        axios.put(`${baseUrl}/Users/Verify`, data, {
+            headers: requestHeaders,
+        })
+            .then((response) => {
+                getToastValue("success", "Mail is verified");
+                navigate("/login");
+                setIsLoading(false);
+                reset(); // Optionally reset the form
+            })
+            .catch((error) => {
+                getToastValue("error", error.response.data.message);
+                setIsLoading(false);
             });
     };
 
     return (
+        <div className=" Auth-container container-fluid">
+            <ToastContainer />
+            <div className="row  bg-overlay vh-100 justify-content-center align-items-center">
+                <div className="col-md-6">
+                    <div className="bg-white py-2 rounded-2">
+                        <div className="logo-cont text-center">
+                            <img src={logo} className='w-25' alt="logo" />
+                        </div>
 
-        <>
-            <Modal show={show} onHide={handleClose}>
+                        {/* form */}
+                        <form className='w-75 m-auto' onSubmit={currentStep === 1 ? handleSubmit(onSubmitStep1) : handleSubmit(onSubmitStep2)}>
+                            <h2>{currentStep === 1 ? 'Register' : 'Verify Your Email'}</h2>
+                            <p>{currentStep === 1 ? 'Enter your details below' : 'Enter your email and verification code below'}</p>
 
-                <Modal.Body>
-                    <VerfcationCode handleClose={handleClose} />
-                </Modal.Body>
-
-            </Modal>
-
-            <div className="Auth-container container-fluid">
-                <ToastContainer />
-                <div className="row bg-overlay vh-100 justify-content-center align-items-center">
-                    <div className="col-md-6">
-                        <div className="bg-white p-2">
-                            <div className="logo-cont text-center">
-                                <img src={logo} className='w-25' alt="logo" />
-                            </div>
-
-                            {/* form */}
-                            <form className='w-75 m-auto' onSubmit={handleSubmit(onSubmit)}>
-                                <h2>Register</h2>
-                                <p>Please enter your details</p>
-                                <div className='row'>
+                            {currentStep === 1 && (
+                                <>
+                                    {/* Registration fields */}
+                                    <div className='row'>
                                     <div className="col-md-6">
                                         <div className="form-group my-3 input-icons position-relative">
                                             <i className="icons fa-solid fa-user position-absolute text-success  " />
@@ -214,10 +231,21 @@ export default function Registeration() {
                                 </div>
 
                                 {/* Buttuon login */}
-                                <div className="form-grup my-3">
-                                    <button onClick={handleShow} className=' btn btn-success w-100'>Register</button>
-                                </div>
+                                {/* <div className="form-grup my-3">
+                                    <button onClick={handleShow}
+                                        className=' btn btn-success w-100'
+                                        disabled={!isValid}>
 
+                                        Register</button>
+                                </div> */}
+
+
+
+                                    <div className="form-group my-3">
+                                        <button type="submit" className='btn btn-success w-100' disabled={isLoading}>
+                                            {isLoading ? 'Loading...' : 'Next'}
+                                        </button>
+                                    </div>
 
 
                                 {/* ---------------social media-------------------- */}
@@ -260,19 +288,58 @@ export default function Registeration() {
 
                                     ) : ''}
                                 </div>
-                                {/* ----------------------------------- */}
-                            </form>
+                                </>
+                            )}
 
-                        </div>
+                            {currentStep === 2 && (
+                                <>
+                                    {/* Verification fields */}
+                                        {/* // Email */}
+                            <div className="form-group my-3 input-icons position-relative">
+                                <i className="icons fa-solid fa-envelope position-absolute text-success  " />
+                                <input
+                                    placeholder='Enter your E-mail'
+                                    className='form-control input-field'
+                                    type="email"
+                                    {...register("email", {
+                                        required: true,
+                                        pattern: {
+                                            value: /^[^@]+@[^@]+\.[^@.]{2,}$/,
+                                            message: "email is required"
+                                        }
+                                    })}
+                                />
+                                {errors.email && (
+                                    <span className='text-danger'>{errors.email.message}</span>)}
+                                {/* {errors.email && errors.email.type === "pattern" && (
+                <span className='text-danger'>invaild mail</span>)} */}
+                            </div>
+                            {/* Code */}
+                            <div className="form-group my-3 input-icons position-relative">
+                                <i className="icons fa-solid fa-key position-absolute text-success" />
+                                <input
+                                    placeholder='code'
+                                    className='form-control mb-1 text-muted'
+                                    type="text"
+                                    {...register("code", {
+                                        required: "Verifcation code required",
+
+                                    })}
+                                />
+                                {errors.code && (
+                                    <span className='text-danger'>{errors?.code?.message}</span>)}
+                            </div>
+                                    <div className="form-group my-3">
+                                        <button type="submit" className='btn btn-success w-100' disabled={isLoading}>
+                                            {isLoading ? 'Loading...' : 'Verify'}
+                                        </button>
+                                    </div>
+                                </>
+                            )}
+                        </form>
                     </div>
                 </div>
             </div>
-
-
-
-
-
-        </>
-
-    )
+        </div>
+    );
 }
