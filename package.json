@@ -1,6 +1,6 @@
 {
   "name": "food-react-app",
-  "private": false,
+  "private": true,
   "homepage": "./",
   "version": "0.0.0",
   "type": "module",
